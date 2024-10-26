@@ -1,8 +1,8 @@
-import React, { useRef, useEffect } from 'react';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { GripVertical } from 'lucide-react';
-import type { Block as BlockType } from '../../types';
+import React, { useRef, useEffect } from "react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { GripVertical } from "lucide-react";
+import type { Block as BlockType } from "../../types";
 
 interface BlockProps {
   block: BlockType;
@@ -12,7 +12,13 @@ interface BlockProps {
   onFocus: () => void;
 }
 
-export default function Block({ block, isActive, onChange, onKeyDown, onFocus }: BlockProps) {
+export default function Block({
+  block,
+  isActive,
+  onChange,
+  onKeyDown,
+  onFocus,
+}: BlockProps) {
   const {
     attributes,
     listeners,
@@ -37,22 +43,22 @@ export default function Block({ block, isActive, onChange, onKeyDown, onFocus }:
 
   const getBlockStyle = () => {
     switch (block.type) {
-      case 'heading1':
-        return 'text-3xl font-bold';
-      case 'heading2':
-        return 'text-2xl font-bold';
-      case 'heading3':
-        return 'text-xl font-bold';
-      case 'bulletList':
-        return 'pl-6 list-disc';
-      case 'numberedList':
-        return 'pl-6 list-decimal';
-      case 'quote':
-        return 'pl-4 border-l-4 border-gray-200 italic';
-      case 'code':
-        return 'font-mono bg-gray-50 p-2 rounded';
+      case "heading1":
+        return "text-3xl font-bold";
+      case "heading2":
+        return "text-2xl font-bold";
+      case "heading3":
+        return "text-xl font-bold";
+      case "bulletList":
+        return "pl-6 list-disc";
+      case "numberedList":
+        return "pl-6 list-decimal";
+      case "quote":
+        return "pl-4 border-l-4 border-gray-200 italic";
+      case "code":
+        return "font-mono bg-gray-50 p-2 rounded";
       default:
-        return '';
+        return "";
     }
   };
 
@@ -60,12 +66,14 @@ export default function Block({ block, isActive, onChange, onKeyDown, onFocus }:
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative flex items-start gap-2 ${isDragging ? 'opacity-50' : ''}`}
+      className={`group relative flex items-start gap-2 ${
+        isDragging ? "opacity-50" : ""
+      }`}
     >
       <div
         {...attributes}
         {...listeners}
-        className="mt-3 cursor-grab opacity-0 group-hover:opacity-100"
+        className="mt-1 cursor-grab opacity-0 group-hover:opacity-100"
       >
         <GripVertical className="h-4 w-4 text-gray-400" />
       </div>
@@ -73,11 +81,11 @@ export default function Block({ block, isActive, onChange, onKeyDown, onFocus }:
         ref={inputRef}
         contentEditable
         suppressContentEditableWarning
-        onInput={(e) => onChange(e.currentTarget.textContent || '')}
+        onInput={(e) => onChange(e.currentTarget.textContent || "")}
         onKeyDown={onKeyDown}
         onFocus={onFocus}
         className={`flex-1 outline-none ${getBlockStyle()}`}
-        dangerouslySetInnerHTML={{ __html: block.content || '<br>' }}
+        dangerouslySetInnerHTML={{ __html: block.content || "<br>" }}
       />
     </div>
   );

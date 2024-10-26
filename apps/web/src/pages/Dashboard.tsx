@@ -85,6 +85,9 @@ export default function Dashboard() {
 
   const deleteNote = (id: string) => {
     setNotes(notes.filter((note) => note.id !== id));
+    if (selectedNote?.id === id) {
+      setSelectedNote(null);
+    }
   };
 
   const changeNoteColor = (id: string, color: string) => {
@@ -133,11 +136,16 @@ export default function Dashboard() {
     return <ProfileModal onSubmit={handleProfileSubmit} />;
   }
 
+  // Filter notes based on search query and exclude selected note
   const filteredNotes = notes.filter(
     (note) =>
-      note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      note.content.toLowerCase().includes(searchQuery.toLowerCase())
+      note.id !== selectedNote?.id && // Exclude selected note
+      (note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        note.content.toLowerCase().includes(searchQuery.toLowerCase()))
   );
+
+  const showEmptyState =
+    notes.length === 0 || (notes.length === 1 && selectedNote);
 
   return (
     <AppLayout
@@ -168,7 +176,7 @@ export default function Dashboard() {
         </SortableContext>
       </DndContext>
 
-      {notes.length === 0 && (
+      {showEmptyState && (
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <div className="rounded-full bg-gray-100 p-4">
             <Plus className="h-6 w-6 text-gray-400" />
