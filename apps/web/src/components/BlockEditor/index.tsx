@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import {
   DndContext,
   DragEndEvent,
@@ -7,15 +7,15 @@ import {
   closestCenter,
   useSensor,
   useSensors,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import {
   SortableContext,
   arrayMove,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import Block from './Block';
-import BlockMenu from './BlockMenu';
-import type { Block as BlockType } from '../../types';
+} from "@dnd-kit/sortable";
+import Block from "./Block";
+import BlockMenu from "./BlockMenu";
+import type { Block as BlockType } from "../../types";
 
 interface BlockEditorProps {
   blocks: BlockType[];
@@ -23,6 +23,8 @@ interface BlockEditorProps {
 }
 
 export default function BlockEditor({ blocks, onChange }: BlockEditorProps) {
+  const editorRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const [activeBlockId, setActiveBlockId] = useState<string | null>(null);
   const [menuState, setMenuState] = useState<{
     show: boolean;
@@ -30,7 +32,7 @@ export default function BlockEditor({ blocks, onChange }: BlockEditorProps) {
     position: { x: number; y: number };
   }>({
     show: false,
-    query: '',
+    query: "",
     position: { x: 0, y: 0 },
   });
 
@@ -48,92 +50,125 @@ export default function BlockEditor({ blocks, onChange }: BlockEditorProps) {
     })
   );
 
+  // Handle clicks outside the menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        menuState.show &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node)
+      ) {
+        setMenuState((prev) => ({ ...prev, show: false }));
+      }
+    };
+
+    // Handle escape key globally
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (menuState.show && event.key === "Escape") {
+        // TODO: Close the menu
+        // Keep it disabled for now since the modal also closes on escape
+        // setMenuState((prev) => ({ ...prev, show: false }));
+      }
+    };
+
+    if (menuState.show) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleEscapeKey);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, [menuState.show]);
+
   const handleBlockChange = (id: string, content: string) => {
     onChange(
-      blocks.map(block =>
-        block.id === id ? { ...block, content } : block
-      )
+      blocks.map((block) => (block.id === id ? { ...block, content } : block))
     );
   };
 
-  const handleKeyDown = useCallback((id: string, e: React.KeyboardEvent) => {
-    const block = blocks.find(b => b.id === id);
-    if (!block) return;
+  const handleKeyDown = useCallback(
+    (id: string, e: React.KeyboardEvent) => {
+      const block = blocks.find((b) => b.id === id);
+      if (!block) return;
 
-    if (e.key === '/') {
-      e.preventDefault();
-      const rect = (e.target as HTMLElement).getBoundingClientRect();
-      setMenuState({
-        show: true,
-        query: '',
-        position: {
-          x: rect.left,
-          y: rect.bottom + window.scrollY,
-        },
-      });
-      return;
-    }
+      if (e.key === "/") {
+        e.preventDefault();
+        const target = e.target as HTMLElement;
+        const rect = target.getBoundingClientRect();
+        const editorRect = editorRef.current?.getBoundingClientRect();
 
-    if (menuState.show) {
-      if (e.key === 'Escape') {
-        setMenuState(prev => ({ ...prev, show: false }));
+        if (editorRect) {
+          // Calculate position relative to the editor container
+          const x = rect.left - editorRect.left;
+          const y = rect.bottom - editorRect.top;
+
+          setMenuState({
+            show: true,
+            query: "",
+            position: { x, y },
+          });
+        }
+        return;
       }
-      return;
-    }
 
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      const newBlock: BlockType = {
-        id: Date.now().toString(),
-        type: 'paragraph',
-        content: '',
-      };
-      const index = blocks.findIndex(b => b.id === id);
-      const newBlocks = [...blocks];
-      newBlocks.splice(index + 1, 0, newBlock);
-      onChange(newBlocks);
-      setActiveBlockId(newBlock.id);
-    }
+      if (e.key === "Enter" && !e.shiftKey) {
+        console.log("Enter");
+        const newBlock: BlockType = {
+          id: Date.now().toString(),
+          type: "paragraph",
+          content: "",
+        };
+        const index = blocks.findIndex((b) => b.id === id);
+        const newBlocks = [...blocks];
+        newBlocks.splice(index + 1, 0, newBlock);
+        onChange(newBlocks);
+        setActiveBlockId(newBlock.id);
+        console.log("newBlock", newBlock);
+      }
 
-    if (e.key === 'Backspace' && !block.content && blocks.length > 1) {
-      e.preventDefault();
-      const index = blocks.findIndex(b => b.id === id);
-      const newBlocks = blocks.filter(b => b.id !== id);
-      onChange(newBlocks);
-      setActiveBlockId(blocks[index - 1]?.id || blocks[index + 1]?.id);
-    }
-  }, [blocks, menuState.show, onChange]);
+      if (e.key === "Backspace" && !block.content && blocks.length > 1) {
+        e.preventDefault();
+        const index = blocks.findIndex((b) => b.id === id);
+        const newBlocks = blocks.filter((b) => b.id !== id);
+        onChange(newBlocks);
+        setActiveBlockId(blocks[index - 1]?.id || blocks[index + 1]?.id);
+      }
+    },
+    [blocks, onChange]
+  );
 
-  const handleBlockSelect = (type: BlockType['type']) => {
+  const handleBlockSelect = (type: BlockType["type"]) => {
     if (!activeBlockId) return;
 
     onChange(
-      blocks.map(block =>
+      blocks.map((block) =>
         block.id === activeBlockId ? { ...block, type } : block
       )
     );
-    setMenuState(prev => ({ ...prev, show: false }));
+    setMenuState((prev) => ({ ...prev, show: false }));
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    
+
     if (over && active.id !== over.id) {
-      const oldIndex = blocks.findIndex(block => block.id === active.id);
-      const newIndex = blocks.findIndex(block => block.id === over.id);
+      const oldIndex = blocks.findIndex((block) => block.id === active.id);
+      const newIndex = blocks.findIndex((block) => block.id === over.id);
       onChange(arrayMove(blocks, oldIndex, newIndex));
     }
   };
 
   return (
-    <div className="relative min-h-[300px] space-y-1">
+    <div ref={editorRef} className="relative min-h-[300px] space-y-1">
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
         <SortableContext items={blocks} strategy={verticalListSortingStrategy}>
-          {blocks.map(block => (
+          {blocks.map((block) => (
             <Block
               key={block.id}
               block={block}
@@ -147,11 +182,13 @@ export default function BlockEditor({ blocks, onChange }: BlockEditorProps) {
       </DndContext>
 
       {menuState.show && (
-        <BlockMenu
-          query={menuState.query}
-          onSelect={handleBlockSelect}
-          position={menuState.position}
-        />
+        <div ref={menuRef}>
+          <BlockMenu
+            query={menuState.query}
+            onSelect={handleBlockSelect}
+            position={menuState.position}
+          />
+        </div>
       )}
     </div>
   );
