@@ -1,0 +1,20 @@
+type User {
+  id: ID!
+  name: String!
+  color: String!
+  lastActive: DateTime!
+}
+
+input CreateUserInput {
+  name: String!
+  color: String!
+}
+
+extend type Query {
+  users: [User!]!
+  user(id: ID!): User
+}
+
+extend type Mutation {
+  createUser(input: CreateUserInput!): User!
+}

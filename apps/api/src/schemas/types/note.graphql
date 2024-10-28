@@ -1,0 +1,27 @@
+type Note {
+  id: ID!
+  title: String!
+  content: String!
+  color: String!
+  version: Int!
+  lastEdited: DateTime!
+  blocks: [Block!]!
+  activeUsers: [User!]!
+}
+
+input CreateNoteInput {
+  title: String!
+  content: String!
+  color: String!
+  blocks: [BlockInput!]!
+}
+
+extend type Query {
+  notes: [Note!]!
+  note(id: ID!): Note
+}
+
+extend type Mutation {
+  createNote(input: CreateNoteInput!): Note!
+  addUserToNote(noteId: ID!, userId: ID!): Note!
+}
