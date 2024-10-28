@@ -1,18 +1,27 @@
-import React from 'react';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import LiveNoteCard from './LiveNoteCard';
-import type { LiveNote } from '../types';
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import type { LiveNote } from "../types";
+import NoteCard from "@/components/NoteCard";
 
 interface SortableNoteProps {
   note: LiveNote;
   onDelete: (id: string) => void;
   onColorChange: (id: string, color: string) => void;
-  onContentChange: (id: string, field: 'title' | 'content', value: string) => void;
+  onContentChange: (
+    id: string,
+    field: "title" | "content",
+    value: string
+  ) => void;
   onNoteClick: () => void;
 }
 
-export default function SortableNote({ note, onDelete, onColorChange, onContentChange, onNoteClick }: SortableNoteProps) {
+export default function SortableNote({
+  note,
+  onDelete,
+  onColorChange,
+  onContentChange,
+  onNoteClick,
+}: SortableNoteProps) {
   const {
     attributes,
     listeners,
@@ -26,12 +35,12 @@ export default function SortableNote({ note, onDelete, onColorChange, onContentC
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
-    cursor: isDragging ? 'grabbing' : 'grab',
+    cursor: isDragging ? "grabbing" : "grab",
   };
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <LiveNoteCard
+      <NoteCard
         note={note}
         onDelete={onDelete}
         onColorChange={onColorChange}

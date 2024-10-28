@@ -121,9 +121,9 @@ export default function NoteModal({
               )}
             </div>
 
-            <button className="rounded-full p-2 hover:bg-black/5">
+            {/* <button className="rounded-full p-2 hover:bg-black/5">
               <Tag className="h-4 w-4 text-gray-600" />
-            </button>
+            </button> */}
           </div>
 
           <button

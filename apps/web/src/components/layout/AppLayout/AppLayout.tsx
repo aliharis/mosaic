@@ -52,16 +52,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
                   >
                     {currentUser.name.charAt(0).toUpperCase()}
                   </div>
-                  {mockUsers.map((user) => (
-                    <div
-                      key={user.id}
-                      className="relative inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-sm font-medium text-white"
-                      style={{ backgroundColor: user.color }}
-                      title={user.name}
-                    >
-                      {user.name.charAt(0).toUpperCase()}
-                    </div>
-                  ))}
                 </div>
               </div>
             </div>
