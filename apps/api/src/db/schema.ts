@@ -89,3 +89,12 @@ export interface Block {
     | "code";
   content: string;
 }
+
+export const schemaWithRelations = {
+  notes,
+  users,
+  noteToUsers,
+  notesRelations,
+  usersRelations,
+  noteToUsersRelations,
+};

@@ -13,6 +13,7 @@ import {
   arrayMove,
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
+import { useQuery } from "graphql-hooks";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import NoteModal from "../components/NoteModal";
@@ -25,11 +26,42 @@ const MOCK_USERS: User[] = [
   { id: "3", name: "Charlie", color: "#B5FFB8", lastActive: new Date() },
 ];
 
+const GET_NOTES = `
+  query GetNotes {
+    notes {
+      id
+      title
+      content
+      color
+      version
+      lastEdited
+      blocks {
+        id
+        type
+        content
+      }
+      activeUsers {
+        id
+        name
+        color
+      }
+    }
+  }
+`;
+
 export default function Dashboard() {
   const [notes, setNotes] = useState<LiveNote[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [selectedNote, setSelectedNote] = useState<LiveNote | null>(null);
+
+  const { data, loading, error } = useQuery(GET_NOTES);
+
+  useEffect(() => {
+    if (data) {
+      setNotes(data.notes);
+    }
+  }, [data]);
 
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -159,6 +191,9 @@ export default function Dashboard() {
 
   const showEmptyState =
     notes.length === 0 || (notes.length === 1 && selectedNote);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
     <AppLayout

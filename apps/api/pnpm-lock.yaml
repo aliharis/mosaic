@@ -23,12 +23,15 @@ importers:
       '@types/node':
         specifier: ^22.8.1
         version: 22.8.1
+      add:
+        specifier: ^2.0.6
+        version: 2.0.6
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
       drizzle-orm:
         specifier: ^0.35.3
-        version: 0.35.3(@libsql/client-wasm@0.14.0)(@types/pg@8.11.10)(pg@8.13.1)
+        version: 0.35.3(@libsql/client-wasm@0.14.0)(@types/pg@8.11.10)(pg@8.13.1)(postgres@3.4.5)
       graphql:
         specifier: ^16.9.0
         version: 16.9.0
@@ -41,6 +44,9 @@ importers:
       pg:
         specifier: ^8.13.1
         version: 8.13.1
+      postgres:
+        specifier: ^3.4.5
+        version: 3.4.5
       ts-node-dev:
         specifier: ^2.0.0
         version: 2.0.0(@types/node@22.8.1)(typescript@5.6.3)
@@ -63,6 +69,9 @@ importers:
       eslint:
         specifier: ^9.13.0
         version: 9.13.0
+      nodemon:
+        specifier: ^3.1.7
+        version: 3.1.7
       prettier:
         specifier: ^3.3.3
         version: 3.3.3
@@ -834,6 +843,9 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
+  add@2.0.6:
+    resolution: {integrity: sha512-j5QzrmsokwWWp6kUcJQySpbG+xfOBqqKnup3OIk1pz+kB/80SLorZ9V8zHFLO92Lcd+hbvq8bT+zOGoPkmBV0Q==}
+
   ajv@6.12.6:
     resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==}
 
@@ -1209,6 +1221,10 @@ packages:
     resolution: {integrity: sha512-GGTKBX4SD7Wdb8mqeDLni2oaRGYQWjWHGKPQ24ZMnUtKfcsVoiv4uX8+LJr1K6U5VW2Lu1BwJnj7uiori0YtRw==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
+  has-flag@3.0.0:
+    resolution: {integrity: sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw==}
+    engines: {node: '>=4'}
+
   has-flag@4.0.0:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
@@ -1219,6 +1235,9 @@ packages:
   hasown@2.0.2:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
+
+  ignore-by-default@1.0.1:
+    resolution: {integrity: sha512-Ius2VYcGNk7T90CppJqcIkS5ooHUZyIQK+ClZfMfMNFEF9VSE73Fq+906u/CWu92x4gzZMWOwfFYckPObzdEbA==}
 
   ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
@@ -1334,6 +1353,11 @@ packages:
 
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
+
+  nodemon@3.1.7:
+    resolution: {integrity: sha512-hLj7fuMow6f0lbB0cD14Lz2xNjwsyruH251Pk4t/yIitCFJbmY1myuLlHm/q06aST4jg6EgAh74PIBBrRqpVAQ==}
+    engines: {node: '>=10'}
+    hasBin: true
 
   normalize-path@2.1.1:
     resolution: {integrity: sha512-3pKJwH184Xo/lnH6oyP1q2pMd7HcypqqmRs91/6/i2CGtWwIKGCkOOMTm/zXbgTEWHw1uNpNi/igc3ePOYHb6w==}
@@ -1465,6 +1489,10 @@ packages:
   postgres-range@1.1.4:
     resolution: {integrity: sha512-i/hbxIE9803Alj/6ytL7UHQxRvZkI9O4Sy+J3HGc4F4oo/2eQAjTSNJ0bfxyse3bH0nuVesCk+3IRLaMtG3H6w==}
 
+  postgres@3.4.5:
+    resolution: {integrity: sha512-cDWgoah1Gez9rN3H4165peY9qfpEo+SA61oQv65O3cRUE1pOEoJWwddwcqKE8XZYjbblOJlYDlLV4h67HrEVDg==}
+    engines: {node: '>=12'}
+
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
@@ -1473,6 +1501,9 @@ packages:
     resolution: {integrity: sha512-i2tDNA0O5IrMO757lfrdQZCc2jPNDVntV0m/+4whiDfWaTKfMNgR7Qz0NAeGz/nRqF4m5/6CLzbP4/liHt12Ew==}
     engines: {node: '>=14'}
     hasBin: true
+
+  pstree.remy@1.1.8:
+    resolution: {integrity: sha512-77DZwxQmxKnu3aR542U+X8FypNzbfJ+C5XQDk3uWjWxn6151aIMGthWYRXTqT1E5oJvg+ljaa2OJi+VfvCOQ8w==}
 
   punycode@1.4.1:
     resolution: {integrity: sha512-jmYNElW7yvO7TV33CjSmvSiE2yco3bV2czu/OzDKdMNVZQWfxCblURLhf+47syQRBntjfLdd/H0egrzIG+oaFQ==}
@@ -1534,6 +1565,10 @@ packages:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
 
+  simple-update-notifier@2.0.0:
+    resolution: {integrity: sha512-a2B9Y0KlNXl9u/vsW6sTIu9vGEpfKu2wRV6l1H3XEas/0gUIzGzBoP/IouTcUQbm9JWZLH3COxyn03TYlFax6w==}
+    engines: {node: '>=10'}
+
   slash@3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
@@ -1565,6 +1600,10 @@ packages:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
 
+  supports-color@5.5.0:
+    resolution: {integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==}
+    engines: {node: '>=4'}
+
   supports-color@7.2.0:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
     engines: {node: '>=8'}
@@ -1579,6 +1618,10 @@ packages:
   to-regex-range@5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
+
+  touch@3.1.1:
+    resolution: {integrity: sha512-r0eojU4bI8MnHr8c5bNo7lJDdI2qXlWWJk6a9EAFG7vbhTjElYhBVS3/miuE0uOuoLdb8Mc/rVfsmm6eo5o9GA==}
+    hasBin: true
 
   tree-kill@1.2.2:
     resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
@@ -1634,6 +1677,9 @@ packages:
     resolution: {integrity: sha512-hjcS1mhfuyi4WW8IWtjP7brDrG2cuDZukyrYrSauoXGNgx0S7zceP07adYkJycEr56BOUTNPzbInooiN3fn1qw==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  undefsafe@2.0.5:
+    resolution: {integrity: sha512-WxONCrssBM8TSPRqN5EmsjVrsv4A8X12J4ArBiiayv3DyyG3ZlIg6yysuuSYdZsVz3TKcTg2fd//Ujd4CHV1iA==}
 
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
@@ -1953,7 +1999,7 @@ snapshots:
   '@eslint/config-array@0.18.0':
     dependencies:
       '@eslint/object-schema': 2.1.4
-      debug: 4.3.7
+      debug: 4.3.7(supports-color@5.5.0)
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -1963,7 +2009,7 @@ snapshots:
   '@eslint/eslintrc@3.1.0':
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.7
+      debug: 4.3.7(supports-color@5.5.0)
       espree: 10.2.0
       globals: 14.0.0
       ignore: 5.3.2
@@ -2206,7 +2252,7 @@ snapshots:
       '@typescript-eslint/types': 8.11.0
       '@typescript-eslint/typescript-estree': 8.11.0(typescript@5.6.3)
       '@typescript-eslint/visitor-keys': 8.11.0
-      debug: 4.3.7
+      debug: 4.3.7(supports-color@5.5.0)
       eslint: 9.13.0
     optionalDependencies:
       typescript: 5.6.3
@@ -2222,7 +2268,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/typescript-estree': 8.11.0(typescript@5.6.3)
       '@typescript-eslint/utils': 8.11.0(eslint@9.13.0)(typescript@5.6.3)
-      debug: 4.3.7
+      debug: 4.3.7(supports-color@5.5.0)
       ts-api-utils: 1.3.0(typescript@5.6.3)
     optionalDependencies:
       typescript: 5.6.3
@@ -2236,7 +2282,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.11.0
       '@typescript-eslint/visitor-keys': 8.11.0
-      debug: 4.3.7
+      debug: 4.3.7(supports-color@5.5.0)
       fast-glob: 3.3.2
       is-glob: 4.0.3
       minimatch: 9.0.5
@@ -2318,6 +2364,8 @@ snapshots:
       acorn: 8.14.0
 
   acorn@8.14.0: {}
+
+  add@2.0.6: {}
 
   ajv@6.12.6:
     dependencies:
@@ -2409,9 +2457,11 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  debug@4.3.7:
+  debug@4.3.7(supports-color@5.5.0):
     dependencies:
       ms: 2.1.3
+    optionalDependencies:
+      supports-color: 5.5.0
 
   deep-is@0.1.4: {}
 
@@ -2432,12 +2482,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.35.3(@libsql/client-wasm@0.14.0)(@types/pg@8.11.10)(pg@8.13.1):
+  drizzle-orm@0.35.3(@libsql/client-wasm@0.14.0)(@types/pg@8.11.10)(pg@8.13.1)(postgres@3.4.5):
     dependencies:
       '@libsql/client-wasm': 0.14.0
     optionalDependencies:
       '@types/pg': 8.11.10
       pg: 8.13.1
+      postgres: 3.4.5
 
   dset@3.1.4: {}
 
@@ -2447,7 +2498,7 @@ snapshots:
 
   esbuild-register@3.6.0(esbuild@0.19.12):
     dependencies:
-      debug: 4.3.7
+      debug: 4.3.7(supports-color@5.5.0)
       esbuild: 0.19.12
     transitivePeerDependencies:
       - supports-color
@@ -2558,7 +2609,7 @@ snapshots:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.3
-      debug: 4.3.7
+      debug: 4.3.7(supports-color@5.5.0)
       escape-string-regexp: 4.0.0
       eslint-scope: 8.1.0
       eslint-visitor-keys: 4.1.0
@@ -2726,6 +2777,8 @@ snapshots:
 
   graphql@16.9.0: {}
 
+  has-flag@3.0.0: {}
+
   has-flag@4.0.0: {}
 
   hash-it@6.0.0: {}
@@ -2733,6 +2786,8 @@ snapshots:
   hasown@2.0.2:
     dependencies:
       function-bind: 1.1.2
+
+  ignore-by-default@1.0.1: {}
 
   ignore@5.3.2: {}
 
@@ -2827,6 +2882,19 @@ snapshots:
   ms@2.1.3: {}
 
   natural-compare@1.4.0: {}
+
+  nodemon@3.1.7:
+    dependencies:
+      chokidar: 3.6.0
+      debug: 4.3.7(supports-color@5.5.0)
+      ignore-by-default: 1.0.1
+      minimatch: 3.1.2
+      pstree.remy: 1.1.8
+      semver: 7.6.3
+      simple-update-notifier: 2.0.0
+      supports-color: 5.5.0
+      touch: 3.1.1
+      undefsafe: 2.0.5
 
   normalize-path@2.1.1:
     dependencies:
@@ -2942,9 +3010,13 @@ snapshots:
 
   postgres-range@1.1.4: {}
 
+  postgres@3.4.5: {}
+
   prelude-ls@1.2.1: {}
 
   prettier@3.3.3: {}
+
+  pstree.remy@1.1.8: {}
 
   punycode@1.4.1: {}
 
@@ -2992,6 +3064,10 @@ snapshots:
 
   shebang-regex@3.0.0: {}
 
+  simple-update-notifier@2.0.0:
+    dependencies:
+      semver: 7.6.3
+
   slash@3.0.0: {}
 
   source-map-support@0.5.21:
@@ -3011,6 +3087,10 @@ snapshots:
 
   strip-json-comments@3.1.1: {}
 
+  supports-color@5.5.0:
+    dependencies:
+      has-flag: 3.0.0
+
   supports-color@7.2.0:
     dependencies:
       has-flag: 4.0.0
@@ -3022,6 +3102,8 @@ snapshots:
   to-regex-range@5.0.1:
     dependencies:
       is-number: 7.0.0
+
+  touch@3.1.1: {}
 
   tree-kill@1.2.2: {}
 
@@ -3086,6 +3168,8 @@ snapshots:
       prelude-ls: 1.2.1
 
   typescript@5.6.3: {}
+
+  undefsafe@2.0.5: {}
 
   undici-types@6.19.8: {}
 

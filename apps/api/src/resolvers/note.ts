@@ -1,6 +1,7 @@
 import { db } from "../config/database";
 import { notes, noteToUsers } from "../db/schema";
 import { eq } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 
 export default {
   Query: {

@@ -1,9 +1,9 @@
 import { createServer } from "node:http";
 import { createYoga } from "graphql-yoga";
 import { schema } from "./schemas/index";
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 
-dotenv.config();
+// dotenv.config();
 
 // Create a Yoga instance with a GraphQL schema.
 const yoga = createYoga({ schema });
