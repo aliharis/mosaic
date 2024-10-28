@@ -1,19 +1,17 @@
-// src/index.ts
-import { createServer } from "@graphql-yoga/node";
-import { schema } from "./schemas";
-import { context } from "./context";
+import { createServer } from "node:http";
+import { createYoga } from "graphql-yoga";
+import { schema } from "./schemas/index";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const port = process.env.PORT || 4000;
+// Create a Yoga instance with a GraphQL schema.
+const yoga = createYoga({ schema });
 
-const server = createServer({
-  schema,
-  context,
-  port,
-});
+// Pass it into a server to hook into request handlers.
+const server = createServer(yoga);
 
-server.start().then(() => {
-  console.log(`🚀 Server ready at http://localhost:${port}/graphql`);
+// Start the server and you're done!
+server.listen(4000, () => {
+  console.info("Server is running on http://localhost:4000/graphql");
 });

@@ -1,0 +1,12 @@
+{
+  "name": "mosaic-monorepo",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --parallel -r run dev",
+    "dev:web": "pnpm -F web dev",
+    "dev:api": "pnpm -F api dev",
+    "build": "pnpm -r run build",
+    "build:web": "pnpm -F web build",
+    "build:api": "pnpm -F api build"
+  }
+}
