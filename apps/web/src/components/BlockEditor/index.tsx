@@ -90,8 +90,11 @@ export default function BlockEditor({ blocks, onChange }: BlockEditorProps) {
 
   const handleKeyDown = useCallback(
     (id: string, e: React.KeyboardEvent) => {
+      console.log("handleKeyDown", id, e.key);
       const block = blocks.find((b) => b.id === id);
       if (!block) return;
+
+      console.log("block", block);
 
       if (e.key === "/") {
         e.preventDefault();
@@ -114,18 +117,17 @@ export default function BlockEditor({ blocks, onChange }: BlockEditorProps) {
       }
 
       if (e.key === "Enter" && !e.shiftKey) {
-        console.log("Enter");
         const newBlock: BlockType = {
           id: Date.now().toString(),
           type: "paragraph",
           content: "",
         };
+
         const index = blocks.findIndex((b) => b.id === id);
         const newBlocks = [...blocks];
         newBlocks.splice(index + 1, 0, newBlock);
         onChange(newBlocks);
         setActiveBlockId(newBlock.id);
-        console.log("newBlock", newBlock);
       }
 
       if (e.key === "Backspace" && !block.content && blocks.length > 1) {

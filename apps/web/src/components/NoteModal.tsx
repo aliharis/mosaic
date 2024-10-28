@@ -1,19 +1,19 @@
-import React, { useRef, useEffect } from "react";
-import { X, Palette, Tag, Trash2, Clock } from "lucide-react";
-import type { LiveNote, Block } from "../types";
+// components/NoteModal.tsx
+import React, { useRef, useEffect, useCallback } from "react";
+import { X, Palette, Trash2, Clock } from "lucide-react";
+import { debounce } from "lodash";
+// import { useWebSocket } from "../hooks/useWebSocket";
 import UserList from "./UserList";
 import BlockEditor from "./BlockEditor";
 
+import { Note, User, UpdatePayload } from "@/types";
+
 interface NoteModalProps {
-  note: LiveNote;
+  note: Note;
+  currentUser: User;
   onClose: () => void;
   onDelete: (id: string) => void;
-  onColorChange: (id: string, color: string) => void;
-  onContentChange: (
-    id: string,
-    field: "title" | "content" | "blocks",
-    value: string | Block[]
-  ) => void;
+  onUpdate: (noteId: string, changes: Partial<Note>, version: number) => void;
 }
 
 const colors = [
@@ -27,14 +27,75 @@ const colors = [
 
 export default function NoteModal({
   note,
+  currentUser,
   onClose,
   onDelete,
-  onColorChange,
-  onContentChange,
+  onUpdate,
 }: NoteModalProps) {
+  const [localNote, setLocalNote] = React.useState(note);
+  const [isSaving, setIsSaving] = React.useState(false);
   const [showColors, setShowColors] = React.useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
+
+  // // Initialize WebSocket connection
+  // const ws = useWebSocket(note.id, handleWebSocketMessage);
+
+  // Handle incoming WebSocket messages
+  // const handleWebSocketMessage = useCallback(
+  //   (data: any) => {
+  //     if (data.type === "update" && data.payload.noteId === note.id) {
+  //       const { changes, version, userId } = data.payload;
+
+  //       // Only apply changes from other users
+  //       if (userId !== currentUser.id) {
+  //         setLocalNote((prev) => ({
+  //           ...prev,
+  //           ...changes,
+  //           version,
+  //         }));
+  //       }
+  //     }
+  //   },
+  //   [note.id, currentUser.id]
+  // );
+
+  // Debounced update function
+  const debouncedUpdate = useCallback(
+    debounce((changes: Partial<Note>) => {
+      setIsSaving(true);
+      // const updatePayload: UpdatePayload = {
+      //   noteId: note.id,
+      //   changes,
+      //   version: localNote.version + 1,
+      //   userId: currentUser.id,
+      // };
+
+      // Send update through WebSocket
+      // if (ws) {
+      //   ws.send(
+      //     JSON.stringify({
+      //       type: "update",
+      //       payload: updatePayload,
+      //     })
+      //   );
+      // }
+
+      // Update parent state
+      onUpdate(note.id, changes, localNote.version + 1);
+      setIsSaving(false);
+    }, 1000),
+    [note.id, localNote.version, currentUser.id, onUpdate]
+  );
+
+  // Handle local changes
+  const handleChange = (field: keyof Note, value: any) => {
+    console.log("handleChange", field, value);
+
+    const changes = { [field]: value, lastEdited: new Date() };
+    setLocalNote((prev) => ({ ...prev, ...changes }));
+    debouncedUpdate(changes);
+  };
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -44,29 +105,32 @@ export default function NoteModal({
     return () => document.removeEventListener("keydown", handleEscape);
   }, [onClose]);
 
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-      onClose();
-    }
-  };
-
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-      onClick={handleBackdropClick}
+      onClick={(e) =>
+        modalRef.current &&
+        !modalRef.current.contains(e.target as Node) &&
+        onClose()
+      }
     >
       <div
         ref={modalRef}
-        className={`${note.color} w-full max-w-3xl rounded-lg border border-gray-200 shadow-xl`}
+        className={`${localNote.color} w-full max-w-3xl max-h-[80vh] rounded-lg border border-gray-200 shadow-xl flex flex-col`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b p-4">
           <div className="flex items-center gap-4">
-            <UserList users={note.activeUsers} />
-            <span className="flex items-center gap-1 text-sm text-gray-500">
-              <Clock className="h-4 w-4" />
-              {new Date(note.lastEdited).toLocaleTimeString()}
-            </span>
+            <UserList users={localNote.activeUsers} />
+            <div className="flex items-center gap-2">
+              <span className="flex items-center gap-1 text-sm text-gray-500">
+                <Clock className="h-4 w-4" />
+                {new Date(localNote.lastEdited).toLocaleTimeString()}
+              </span>
+              {isSaving && (
+                <span className="text-sm text-gray-500">Saving...</span>
+              )}
+            </div>
           </div>
           <button
             onClick={onClose}
@@ -76,26 +140,23 @@ export default function NoteModal({
           </button>
         </div>
 
-        <div className="space-y-4 p-6">
+        <div className="space-y-4 p-6 overflow-y-auto">
           <input
             ref={titleRef}
             type="text"
-            value={note.title}
-            onChange={(e) => onContentChange(note.id, "title", e.target.value)}
+            value={localNote.title}
+            onChange={(e) => handleChange("title", e.target.value)}
             placeholder="Title"
             className="w-full bg-transparent text-2xl font-medium outline-none placeholder:text-gray-400"
           />
           <BlockEditor
-            blocks={
-              note.blocks || [
-                { id: "1", type: "paragraph", content: note.content },
-              ]
-            }
-            onChange={(blocks) => onContentChange(note.id, "blocks", blocks)}
+            blocks={localNote.blocks}
+            onChange={(blocks) => handleChange("blocks", blocks)}
           />
         </div>
 
         <div className="flex items-center justify-between border-t p-4">
+          {/* Color picker and delete buttons remain the same */}
           <div className="flex gap-2">
             <div className="relative">
               <button

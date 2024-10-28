@@ -120,6 +120,19 @@ export default function Dashboard() {
     );
   };
 
+  // Handle note updates
+  const handleNoteUpdate = (
+    noteId: string,
+    changes: Partial<Note>,
+    version: number
+  ) => {
+    setNotes((prevNotes) =>
+      prevNotes.map((note) =>
+        note.id === noteId ? { ...note, ...changes, version } : note
+      )
+    );
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -193,10 +206,10 @@ export default function Dashboard() {
       {selectedNote && (
         <NoteModal
           note={selectedNote}
+          currentUser={currentUser}
           onClose={() => setSelectedNote(null)}
           onDelete={deleteNote}
-          onColorChange={changeNoteColor}
-          onContentChange={updateNoteContent}
+          onUpdate={handleNoteUpdate}
         />
       )}
     </AppLayout>

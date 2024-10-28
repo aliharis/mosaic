@@ -1,6 +1,14 @@
 export interface Block {
   id: string;
-  type: 'paragraph' | 'heading1' | 'heading2' | 'heading3' | 'bulletList' | 'numberedList' | 'quote' | 'code';
+  type:
+    | "paragraph"
+    | "heading1"
+    | "heading2"
+    | "heading3"
+    | "bulletList"
+    | "numberedList"
+    | "quote"
+    | "code";
   content: string;
 }
 
@@ -15,8 +23,10 @@ export interface Note {
   title: string;
   content: string;
   color: string;
-  pinned: boolean;
-  labels: Label[];
+  version: number;
+  lastEdited: Date;
+  blocks: Block[];
+  activeUsers: User[];
 }
 
 export interface User {
@@ -30,4 +40,11 @@ export interface LiveNote extends Note {
   activeUsers: User[];
   lastEdited: Date;
   blocks: Block[];
+}
+
+export interface UpdatePayload {
+  noteId: string;
+  changes: Partial<Note>;
+  version: number;
+  userId: string;
 }

@@ -29,12 +29,15 @@ export default function Block({
   } = useSortable({ id: block.id });
 
   const inputRef = useRef<HTMLDivElement>(null);
+  // Add a ref to store the cursor position
+  const cursorPositionRef = useRef<number>(0);
 
   useEffect(() => {
     if (isActive && inputRef.current) {
       inputRef.current.focus();
+      restoreSelection();
     }
-  }, [isActive]);
+  }, [isActive, block.content]);
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -62,6 +65,38 @@ export default function Block({
     }
   };
 
+  const saveSelection = () => {
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      if (inputRef.current?.contains(range.startContainer)) {
+        cursorPositionRef.current = range.startOffset;
+      }
+    }
+  };
+
+  const restoreSelection = () => {
+    const selection = window.getSelection();
+    const node = inputRef.current?.firstChild || inputRef.current;
+    if (selection && node) {
+      const range = document.createRange();
+      range.setStart(
+        node,
+        Math.min(cursorPositionRef.current, node.textContent?.length || 0)
+      );
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  };
+
+  const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
+    saveSelection();
+    // Get the raw content and normalize spaces
+    const content = e.currentTarget.innerText || "";
+    onChange(content);
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -81,10 +116,10 @@ export default function Block({
         ref={inputRef}
         contentEditable
         suppressContentEditableWarning
-        onInput={(e) => onChange(e.currentTarget.textContent || "")}
+        onInput={handleInput}
         onKeyDown={onKeyDown}
         onFocus={onFocus}
-        className={`flex-1 outline-none ${getBlockStyle()}`}
+        className={`flex-1 outline-none whitespace-pre-wrap ${getBlockStyle()}`}
         dangerouslySetInnerHTML={{ __html: block.content || "<br>" }}
       />
     </div>
