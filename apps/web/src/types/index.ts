@@ -36,12 +36,6 @@ export interface User {
   lastActive: Date;
 }
 
-export interface LiveNote extends Note {
-  activeUsers: User[];
-  lastEdited: Date;
-  blocks: Block[];
-}
-
 export interface UpdatePayload {
   noteId: string;
   changes: Partial<Note>;

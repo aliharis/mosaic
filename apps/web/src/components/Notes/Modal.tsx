@@ -3,14 +3,14 @@ import React, { useRef, useEffect, useCallback } from "react";
 import { X, Palette, Trash2, Clock } from "lucide-react";
 import { debounce } from "lodash";
 // import { useWebSocket } from "../hooks/useWebSocket";
-import UserList from "./UserList";
-import BlockEditor from "./BlockEditor";
+import UserList from "../UserList";
+import BlockEditor from "../BlockEditor";
 
-import { Note, User, UpdatePayload } from "@/types";
+import { Note, UpdatePayload } from "@/types";
+import { useAuth } from "@/context/auth";
 
 interface NoteModalProps {
   note: Note;
-  currentUser: User;
   onClose: () => void;
   onDelete: (id: string) => void;
   onUpdate: (noteId: string, changes: Partial<Note>, version: number) => void;
@@ -27,7 +27,6 @@ const colors = [
 
 export default function NoteModal({
   note,
-  currentUser,
   onClose,
   onDelete,
   onUpdate,
@@ -37,6 +36,7 @@ export default function NoteModal({
   const [showColors, setShowColors] = React.useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
+  const { user } = useAuth();
 
   // // Initialize WebSocket connection
   // const ws = useWebSocket(note.id, handleWebSocketMessage);
@@ -85,7 +85,7 @@ export default function NoteModal({
       onUpdate(note.id, changes, localNote.version + 1);
       setIsSaving(false);
     }, 1000),
-    [note.id, localNote.version, currentUser.id, onUpdate]
+    [note.id, localNote.version, user.id, onUpdate]
   );
 
   // Handle local changes
