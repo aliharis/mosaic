@@ -7,17 +7,13 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import {
-  SortableContext,
-  arrayMove,
-  rectSortingStrategy,
-} from "@dnd-kit/sortable";
+import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import { useQuery } from "graphql-hooks";
 import { Plus } from "lucide-react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect } from "react";
 import NoteModal from "./Modal";
 import SortableNote from "../SortableNote";
-import type { Block, Note } from "../../types";
+import useNotesStore from "@/store/useNotesStore";
 
 const GET_NOTES = `
   query GetNotes {
@@ -43,8 +39,19 @@ const GET_NOTES = `
 `;
 
 export default function Notes() {
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  const {
+    notes,
+    selectedNote,
+    isNewNoteModalOpen,
+    setNotes,
+    addNote,
+    deleteNote,
+    changeNoteColor,
+    updateNoteContent,
+    handleNoteUpdate,
+    setSelectedNote,
+    reorderNotes,
+  } = useNotesStore();
 
   const { data, loading, error } = useQuery(GET_NOTES);
 
@@ -52,7 +59,7 @@ export default function Notes() {
     if (data) {
       setNotes(data.notes);
     }
-  }, [data]);
+  }, [data, setNotes]);
 
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -68,91 +75,35 @@ export default function Notes() {
     })
   );
 
-  const addNote = () => {
-    const newNote: Note = {
-      id: Date.now().toString(),
+  const addNewNote = useCallback(() => {
+    const newNote = {
       title: "",
       content: "",
       color: "bg-white",
       activeUsers: [],
       lastEdited: new Date(),
       blocks: [{ id: "1", type: "paragraph", content: "" }],
+      version: 0,
     };
-    setNotes([newNote, ...notes]);
-    setSelectedNote(newNote);
-  };
+    addNote(newNote);
+    setSelectedNote(newNote as any);
+  }, [addNote, setSelectedNote]);
 
-  const deleteNote = (id: string) => {
-    setNotes(notes.filter((note) => note.id !== id));
-    if (selectedNote?.id === id) {
-      setSelectedNote(null);
+  useEffect(() => {
+    if (isNewNoteModalOpen) {
+      addNewNote();
     }
-  };
-
-  const changeNoteColor = (id: string, color: string) => {
-    setNotes(
-      notes.map((note) =>
-        note.id === id ? { ...note, color, lastEdited: new Date() } : note
-      )
-    );
-  };
-
-  const updateNoteContent = (
-    id: string,
-    field: "title" | "content" | "blocks",
-    value: string | Block[]
-  ) => {
-    setNotes(
-      notes.map((note) =>
-        note.id === id
-          ? {
-              ...note,
-              [field]: value,
-              content:
-                field === "blocks"
-                  ? (value as Block[]).map((b) => b.content).join("\n")
-                  : note.content,
-              lastEdited: new Date(),
-            }
-          : note
-      )
-    );
-  };
-
-  // Handle note updates
-  const handleNoteUpdate = (
-    noteId: string,
-    changes: Partial<Note>,
-    version: number
-  ) => {
-    setNotes((prevNotes) =>
-      prevNotes.map((note) =>
-        note.id === noteId ? { ...note, ...changes, version } : note
-      )
-    );
-  };
+  }, [isNewNoteModalOpen, addNewNote]);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      setNotes((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
-        return arrayMove(items, oldIndex, newIndex);
-      });
+      const oldIndex = notes.findIndex((item) => item.id === active.id);
+      const newIndex = notes.findIndex((item) => item.id === over.id);
+      reorderNotes(oldIndex, newIndex);
     }
   };
-
-  // Filter notes based on search query and exclude selected note
-  //   const filteredNotes = notes.filter(
-  //     (note) =>
-  //       note.id !== selectedNote?.id && // Exclude selected note
-  //       (note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //         note.content.toLowerCase().includes(searchQuery.toLowerCase()))
-  //   );
-
-  const filteredNotes = notes;
 
   const showEmptyState =
     notes.length === 0 || (notes.length === 1 && selectedNote);
@@ -167,9 +118,9 @@ export default function Notes() {
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
-        <SortableContext items={filteredNotes} strategy={rectSortingStrategy}>
+        <SortableContext items={notes} strategy={rectSortingStrategy}>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredNotes.map((note) => (
+            {notes.map((note) => (
               <SortableNote
                 key={note.id}
                 note={note}

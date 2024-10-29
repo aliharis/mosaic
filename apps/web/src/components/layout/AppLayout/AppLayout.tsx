@@ -1,22 +1,25 @@
 import React from "react";
 import { Plus, Search } from "lucide-react";
 import type { AppLayoutProps } from "./AppLayout.types";
+import { useAuth } from "@/context/auth";
+import useNotesStore from "@/store/useNotesStore";
 
 export const AppLayout: React.FC<AppLayoutProps> = ({
   children,
-  currentUser,
   searchQuery,
   onSearchChange,
   onAddNote,
-  mockUsers,
 }) => {
+  const { user } = useAuth();
+  const openNewNoteModal = useNotesStore((state) => state.openNewNoteModal);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="sticky top-0 z-20 border-b bg-white/80 backdrop-blur-sm">
         <div className="mx-auto max-w-6xl px-4 py-4">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <div className="flex items-center justify-between">
-              <h1 className="text-xl font-semibold text-gray-900">Mosaic</h1>
+              <h1 className="text-xl font-semibold text-gray-900">mosaic</h1>
               <button
                 onClick={onAddNote}
                 className="flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 sm:hidden"
@@ -29,7 +32,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               <Search className="h-5 w-5 text-gray-500" />
               <input
                 type="text"
-                placeholder="Search live notes"
+                placeholder="Search your notes"
                 className="flex-1 bg-transparent outline-none placeholder:text-gray-500"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
@@ -37,7 +40,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
             </div>
             <div className="hidden items-center gap-4 sm:flex">
               <button
-                onClick={onAddNote}
+                onClick={openNewNoteModal}
                 className="flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
               >
                 <Plus className="h-4 w-4" />
@@ -47,10 +50,10 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
                 <div className="flex -space-x-2">
                   <div
                     className="relative inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-sm font-medium text-white"
-                    style={{ backgroundColor: currentUser.color }}
-                    title={`${currentUser.name} (You)`}
+                    style={{ backgroundColor: user?.color }}
+                    title={`${user?.name} (You)`}
                   >
-                    {currentUser.name.charAt(0).toUpperCase()}
+                    {user?.name.charAt(0).toUpperCase()}
                   </div>
                 </div>
               </div>
