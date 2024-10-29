@@ -32,7 +32,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="h-screen flex flex-col items-center justify-center relative bg-gradient-to-br from-pink-50 via-blue-50 to-purple-50 animate-gradient">
       <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
         <h2 className="text-center text-3xl font-bold text-gray-900">
           Welcome to Mosaic
@@ -87,7 +87,7 @@ export default function Login() {
             disabled={!name.trim()}
             className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 disabled:bg-gray-400"
           >
-            Start Collaborating
+            Get Started
           </button>
         </form>
       </div>
