@@ -3,9 +3,18 @@ import { notes, noteToUsers } from "../db/schema";
 import { eq } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 
+interface NoteInput {
+  title: string;
+  content: string;
+  color: string;
+  blocks: any[];
+}
+
+interface ResolverContext {}
+
 export default {
   Query: {
-    notes: async () => {
+    notes: async (): Promise<any[]> => {
       return await db.query.notes.findMany({
         with: {
           activeUsers: {
@@ -16,7 +25,8 @@ export default {
         },
       });
     },
-    note: async (_, { id }) => {
+
+    note: async (_: any, { id }: { id: string }): Promise<any> => {
       return await db.query.notes.findFirst({
         where: eq(notes.id, id),
         with: {
@@ -30,7 +40,10 @@ export default {
     },
   },
   Mutation: {
-    createNote: async (_, { input }) => {
+    createNote: async (
+      _: any,
+      { input }: { input: NoteInput }
+    ): Promise<any> => {
       const [note] = await db
         .insert(notes)
         .values({
@@ -42,7 +55,11 @@ export default {
         .returning();
       return note;
     },
-    addUserToNote: async (_, { noteId, userId }) => {
+
+    addUserToNote: async (
+      _: any,
+      { noteId, userId }: { noteId: string; userId: string }
+    ): Promise<any> => {
       await db.insert(noteToUsers).values({
         noteId,
         userId,
@@ -59,9 +76,38 @@ export default {
         },
       });
     },
+
+    updateNote: async (
+      _: any,
+      { id, input }: { id: string; input: NoteInput }
+    ): Promise<any> => {
+      const [updatedNote] = await db
+        .update(notes)
+        .set({
+          title: input.title,
+          content: input.content,
+          color: input.color,
+          blocks: input.blocks,
+        })
+        .where(eq(notes.id, id))
+        .returning();
+      return updatedNote;
+    },
+
+    deleteNote: async (_: any, { id }: { id: string }): Promise<any> => {
+      // First delete related noteToUsers entries
+      await db.delete(noteToUsers).where(eq(noteToUsers.noteId, id));
+
+      // Then delete the note itself
+      const [deletedNote] = await db
+        .delete(notes)
+        .where(eq(notes.id, id))
+        .returning();
+      return deletedNote;
+    },
   },
   Note: {
-    activeUsers: async (note) => {
+    activeUsers: async (note: { id: string }): Promise<any[]> => {
       const userConnections = await db.query.noteToUsers.findMany({
         where: eq(noteToUsers.noteId, note.id),
         with: {

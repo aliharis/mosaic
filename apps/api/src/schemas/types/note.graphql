@@ -23,5 +23,7 @@ extend type Query {
 
 extend type Mutation {
   createNote(input: CreateNoteInput!): Note!
+  updateNote(id: ID!, input: CreateNoteInput!): Note!
+  deleteNote(id: ID!): Note!
   addUserToNote(noteId: ID!, userId: ID!): Note!
 }
