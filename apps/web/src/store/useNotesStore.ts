@@ -2,8 +2,9 @@ import { create } from "zustand";
 import { Note, Block } from "@/types";
 import { client } from "@/utils/graphql-client";
 import {
-  UPDATE_NOTE_MUTATION,
   CREATE_NOTE_MUTATION,
+  DELETE_NOTE_MUTATION,
+  UPDATE_NOTE_MUTATION,
 } from "@/graphql/mutations/note";
 import { BlockInput, CreateNoteInput } from "@/graphql/types/graphql";
 interface NotesState {
@@ -75,10 +76,26 @@ const useNotesStore = create<NotesState>((set) => ({
     }),
 
   deleteNote: (id) =>
-    set((state) => ({
-      notes: state.notes.filter((note) => note.id !== id),
-      selectedNote: state.selectedNote?.id === id ? null : state.selectedNote,
-    })),
+    set((state) => {
+      // Update local state optimistically
+      const newState = {
+        notes: state.notes.filter((note) => note.id !== id),
+        selectedNote: state.selectedNote?.id === id ? null : state.selectedNote,
+      };
+
+      // Sync with server
+      client
+        .request({
+          query: DELETE_NOTE_MUTATION,
+          variables: { id },
+        })
+        .catch((error) => {
+          console.error("Failed to delete note:", error);
+          // TODO: Rollback the optimistic update if the API call fails
+        });
+
+      return newState;
+    }),
 
   changeNoteColor: (id, color) =>
     set((state) => ({

@@ -9,6 +9,14 @@ mutation CreateNote($note: CreateNoteInput!) {
 }
 `;
 
+export const DELETE_NOTE_MUTATION = `
+mutation DeleteNote($id: ID!) {
+  deleteNote(id: $id) {
+    id
+  }
+}
+`;
+
 export const UPDATE_NOTE_MUTATION = `
 mutation UpdateNote($id: ID!, $changes: UpdateNoteInput!) {
   updateNote(id: $id, changes: $changes) {
