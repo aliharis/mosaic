@@ -26,7 +26,7 @@ export interface Note {
   version: number;
   lastEdited: Date;
   blocks: Block[];
-  activeUsers: User[];
+  activeUsers?: User[];
 }
 
 export interface User {

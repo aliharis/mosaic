@@ -80,7 +80,6 @@ export default function Notes() {
       title: "",
       content: "",
       color: "bg-white",
-      activeUsers: [],
       lastEdited: new Date(),
       blocks: [{ id: "1", type: "paragraph", content: "" }],
       version: 0,

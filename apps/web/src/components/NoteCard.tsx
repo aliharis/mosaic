@@ -47,7 +47,7 @@ export default function NoteCard({
       className={`${note.color} group cursor-pointer rounded-lg border border-gray-200 p-4 shadow-sm transition-all hover:shadow-md`}
     >
       <div className="mb-3 flex items-center justify-between">
-        <UserList users={note.activeUsers} />
+        {note.activeUsers && <UserList users={note.activeUsers} />}
         <span className="flex items-center gap-1 text-xs text-gray-500">
           <Clock className="h-3 w-3" />
           {new Date(note.lastEdited).toLocaleTimeString()}

@@ -42,7 +42,10 @@ export type CreateNoteInput = {
   blocks: Array<BlockInput>;
   color: Scalars['String']['input'];
   content: Scalars['String']['input'];
+  id: Scalars['String']['input'];
+  lastEdited: Scalars['DateTime']['input'];
   title: Scalars['String']['input'];
+  version: Scalars['Int']['input'];
 };
 
 export type CreateUserInput = {
@@ -55,6 +58,8 @@ export type Mutation = {
   addUserToNote: Note;
   createNote: Note;
   createUser: User;
+  deleteNote: Note;
+  updateNote: Note;
 };
 
 
@@ -65,12 +70,23 @@ export type MutationAddUserToNoteArgs = {
 
 
 export type MutationCreateNoteArgs = {
-  input: CreateNoteInput;
+  note: CreateNoteInput;
 };
 
 
 export type MutationCreateUserArgs = {
   input: CreateUserInput;
+};
+
+
+export type MutationDeleteNoteArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateNoteArgs = {
+  changes: UpdateNoteInput;
+  id: Scalars['ID']['input'];
 };
 
 export type Note = {
@@ -100,6 +116,12 @@ export type QueryNoteArgs = {
 
 export type QueryUserArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type UpdateNoteInput = {
+  blocks: Array<BlockInput>;
+  color?: InputMaybe<Scalars['String']['input']>;
+  lastEdited?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type User = {

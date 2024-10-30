@@ -10,10 +10,13 @@ type Note {
 }
 
 input CreateNoteInput {
+  id: String!
   title: String!
   content: String!
   color: String!
   blocks: [BlockInput!]!
+  version: Int!
+  lastEdited: DateTime!
 }
 
 input UpdateNoteInput {
@@ -28,7 +31,7 @@ extend type Query {
 }
 
 extend type Mutation {
-  createNote(input: CreateNoteInput!): Note!
+  createNote(note: CreateNoteInput!): Note!
   updateNote(id: ID!, changes: UpdateNoteInput!): Note!
   deleteNote(id: ID!): Note!
   addUserToNote(noteId: ID!, userId: ID!): Note!

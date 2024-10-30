@@ -1,7 +1,11 @@
 import { create } from "zustand";
 import { Note, Block } from "@/types";
 import { client } from "@/utils/graphql-client";
-import { UPDATE_NOTE_MUTATION } from "@/graphql/mutations/note";
+import {
+  UPDATE_NOTE_MUTATION,
+  CREATE_NOTE_MUTATION,
+} from "@/graphql/mutations/note";
+import { BlockInput, CreateNoteInput } from "@/graphql/types/graphql";
 interface NotesState {
   isNewNoteModalOpen: boolean;
   notes: Note[];
@@ -37,17 +41,38 @@ const useNotesStore = create<NotesState>((set) => ({
   setNotes: (notes) => set({ notes }),
 
   addNote: (noteData) =>
-    set((state) => ({
-      notes: [
-        {
-          id: crypto.randomUUID(),
-          createdAt: new Date(),
-          ...noteData,
-        },
-        ...state.notes,
-      ],
-      isNewNoteModalOpen: false,
-    })),
+    set((state) => {
+      const newNote: CreateNoteInput = {
+        id: crypto.randomUUID(),
+        title: noteData.title,
+        content: noteData.content,
+        color: noteData.color,
+        version: 1,
+        blocks: noteData.blocks as BlockInput[],
+        lastEdited: new Date(),
+      };
+
+      // Update local state optimistically
+      const newState = {
+        notes: [newNote, ...state.notes],
+        isNewNoteModalOpen: false,
+      };
+
+      // Sync with server
+      client
+        .request({
+          query: CREATE_NOTE_MUTATION,
+          variables: {
+            note: newNote,
+          },
+        })
+        .catch((error) => {
+          console.error("Failed to create note:", error);
+          // TODO: Rollback the optimistic update if the API call fails
+        });
+
+      return newState;
+    }),
 
   deleteNote: (id) =>
     set((state) => ({

@@ -121,7 +121,10 @@ export default function NoteModal({
       >
         <div className="flex items-center justify-between border-b p-4">
           <div className="flex items-center gap-4">
-            <UserList users={localNote.activeUsers} />
+            {localNote.activeUsers && (
+              <UserList users={localNote.activeUsers} />
+            )}
+
             <div className="flex items-center gap-2">
               <span className="flex items-center gap-1 text-sm text-gray-500">
                 <Clock className="h-4 w-4" />

@@ -4,10 +4,12 @@ import { eq } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 
 interface NoteInput {
+  id: string;
   title: string;
   content: string;
   color: string;
   blocks: any[];
+  createdAt: Date;
 }
 
 interface UpdateNoteInput {
@@ -46,20 +48,18 @@ export default {
     },
   },
   Mutation: {
-    createNote: async (
-      _: any,
-      { input }: { input: NoteInput }
-    ): Promise<any> => {
-      const [note] = await db
+    createNote: async (_: any, { note }: { note: NoteInput }): Promise<any> => {
+      const [newNote] = await db
         .insert(notes)
         .values({
-          title: input.title,
-          content: input.content,
-          color: input.color,
-          blocks: input.blocks,
+          id: note.id,
+          title: note.title,
+          content: note.content,
+          color: note.color,
+          blocks: note.blocks,
         })
         .returning();
-      return note;
+      return newNote;
     },
 
     addUserToNote: async (
