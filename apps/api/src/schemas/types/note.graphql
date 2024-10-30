@@ -16,6 +16,12 @@ input CreateNoteInput {
   blocks: [BlockInput!]!
 }
 
+input UpdateNoteInput {
+  color: String
+  blocks: [BlockInput!]!
+  lastEdited: DateTime
+}
+
 extend type Query {
   notes: [Note!]!
   note(id: ID!): Note
@@ -23,7 +29,7 @@ extend type Query {
 
 extend type Mutation {
   createNote(input: CreateNoteInput!): Note!
-  updateNote(id: ID!, input: CreateNoteInput!): Note!
+  updateNote(id: ID!, changes: UpdateNoteInput!): Note!
   deleteNote(id: ID!): Note!
   addUserToNote(noteId: ID!, userId: ID!): Note!
 }

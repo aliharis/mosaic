@@ -10,6 +10,12 @@ interface NoteInput {
   blocks: any[];
 }
 
+interface UpdateNoteInput {
+  color: string;
+  blocks: any[];
+  lastEdited: Date;
+}
+
 interface ResolverContext {}
 
 export default {
@@ -79,15 +85,12 @@ export default {
 
     updateNote: async (
       _: any,
-      { id, input }: { id: string; input: NoteInput }
+      { id, changes }: { id: string; changes: UpdateNoteInput }
     ): Promise<any> => {
       const [updatedNote] = await db
         .update(notes)
         .set({
-          title: input.title,
-          content: input.content,
-          color: input.color,
-          blocks: input.blocks,
+          blocks: changes.blocks,
         })
         .where(eq(notes.id, id))
         .returning();

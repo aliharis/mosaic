@@ -9,10 +9,7 @@ import { AuthProvider, useAuth } from "./context/auth";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import { Splash } from "./components/common/Splash";
-
-const client = new GraphQLClient({
-  url: "http://localhost:4000/graphql",
-});
+import { client } from "./utils/graphql-client";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();

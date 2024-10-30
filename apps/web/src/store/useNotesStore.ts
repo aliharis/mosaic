@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { Note, Block } from "@/types";
-
+import { client } from "@/utils/graphql-client";
+import { UPDATE_NOTE_MUTATION } from "@/graphql/mutations/note";
 interface NotesState {
   isNewNoteModalOpen: boolean;
   notes: Note[];
@@ -78,12 +79,30 @@ const useNotesStore = create<NotesState>((set) => ({
       ),
     })),
 
-  handleNoteUpdate: (noteId, changes, version) =>
-    set((state) => ({
-      notes: state.notes.map((note) =>
-        note.id === noteId ? { ...note, ...changes, version } : note
-      ),
-    })),
+  handleNoteUpdate: async (noteId, changes, version) =>
+    set((state) => {
+      // Update local state optimistically
+      const newState = {
+        notes: state.notes.map((note) =>
+          note.id === noteId ? { ...note, ...changes, version } : note
+        ),
+      };
+
+      // Sync with server
+      client
+        .request({
+          query: UPDATE_NOTE_MUTATION,
+          variables: {
+            id: noteId,
+            changes,
+          },
+        })
+        .catch((error) => {
+          console.error("Failed to sync note update:", error);
+        });
+
+      return newState;
+    }),
 
   setSelectedNote: (note) => set({ selectedNote: note }),
 
