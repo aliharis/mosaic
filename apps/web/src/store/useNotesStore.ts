@@ -13,7 +13,7 @@ interface NotesState {
   selectedNote: Note | null;
   openNewNoteModal: () => void;
   closeNewNoteModal: () => void;
-  addNote: (note: Omit<Note, "id" | "createdAt">) => void;
+  addNote: (note: Note) => void;
   setNotes: (notes: Note[]) => void;
   deleteNote: (id: string) => void;
   changeNoteColor: (id: string, color: string) => void;
@@ -44,7 +44,7 @@ const useNotesStore = create<NotesState>((set) => ({
   addNote: (noteData) =>
     set((state) => {
       const newNote: CreateNoteInput = {
-        id: crypto.randomUUID(),
+        id: noteData.id,
         title: noteData.title,
         content: noteData.content,
         color: noteData.color,

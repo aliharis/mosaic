@@ -14,6 +14,7 @@ import { Fragment, useCallback, useEffect } from "react";
 import NoteModal from "./Modal";
 import SortableNote from "../SortableNote";
 import useNotesStore from "@/store/useNotesStore";
+import { Block, Note } from "@/types";
 
 const GET_NOTES = `
   query GetNotes {
@@ -46,8 +47,6 @@ export default function Notes() {
     setNotes,
     addNote,
     deleteNote,
-    changeNoteColor,
-    updateNoteContent,
     handleNoteUpdate,
     setSelectedNote,
     reorderNotes,
@@ -77,16 +76,18 @@ export default function Notes() {
 
   const addNewNote = useCallback(() => {
     const newNote = {
+      id: crypto.randomUUID(),
       title: "",
       content: "",
       color: "bg-white",
       lastEdited: new Date(),
-      blocks: [{ id: "1", type: "paragraph", content: "" }],
+      blocks: [{ id: "1", type: "paragraph", content: "" } as Block],
       version: 0,
     };
     addNote(newNote);
-    setSelectedNote(newNote as any);
-  }, [addNote, setSelectedNote]);
+    setSelectedNote(newNote as Note);
+    console.log(selectedNote);
+  }, [addNote, selectedNote, setSelectedNote]);
 
   useEffect(() => {
     if (isNewNoteModalOpen) {
@@ -108,7 +109,7 @@ export default function Notes() {
     notes.length === 0 || (notes.length === 1 && selectedNote);
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  if (error) return <div>Error: {error?.message}</div>;
 
   return (
     <Fragment>
@@ -119,15 +120,17 @@ export default function Notes() {
       >
         <SortableContext items={notes} strategy={rectSortingStrategy}>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {notes.map((note) => (
-              <SortableNote
-                key={note.id}
-                note={note}
-                onDelete={deleteNote}
-                onUpdate={handleNoteUpdate}
-                onNoteClick={() => setSelectedNote(note)}
-              />
-            ))}
+            {notes
+              .filter((note) => note.id != selectedNote?.id)
+              .map((note) => (
+                <SortableNote
+                  key={note.id}
+                  note={note}
+                  onDelete={deleteNote}
+                  onUpdate={handleNoteUpdate}
+                  onNoteClick={() => setSelectedNote(note)}
+                />
+              ))}
           </div>
         </SortableContext>
       </DndContext>
