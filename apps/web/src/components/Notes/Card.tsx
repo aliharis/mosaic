@@ -3,6 +3,7 @@ import { Clock, Palette, Trash2 } from "lucide-react";
 import React, { useCallback } from "react";
 import type { Note } from "@/types";
 import UserList from "../UserList";
+import { renderBlocks } from "@/utils/block-renderer";
 
 interface NoteCardProps {
   note: Note;
@@ -82,8 +83,14 @@ export default function NoteCard({
           onClick={(e) => e.stopPropagation()}
         />
         <div className="line-clamp-3">
-          {note.content || (
+          {note.blocks.length === 0 && (
             <span className="text-gray-400">Take a note...</span>
+          )}
+
+          {note.blocks.length > 0 && (
+            <div
+              dangerouslySetInnerHTML={{ __html: renderBlocks(note.blocks) }}
+            />
           )}
         </div>
       </div>
