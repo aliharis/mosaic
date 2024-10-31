@@ -15,7 +15,7 @@ VITE_GRAPHQL_API_URL=http://localhost:4000/graphql
 VITE_GRAPHQL_WS_API_URL=ws://localhost:4000/graphql`;
 
 const apiEnvContent = `# API Environment Variables
-PORT=3001
+PORT=4000
 NODE_ENV=development
 
 # Database
