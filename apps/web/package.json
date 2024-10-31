@@ -19,6 +19,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@types/lodash": "^4.17.13",
     "graphql-hooks": "^8.0.1",
+    "graphql-ws": "^5.16.0",
     "lodash": "^4.17.21",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",

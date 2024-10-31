@@ -6,9 +6,9 @@ type Note {
   color: String!
   version: Int!
   created: DateTime!
-  createdBy: User!
+  createdBy: ID!
   lastEdited: DateTime!
-  lastEditedBy: User!
+  lastEditedBy: ID!
   activeUsers: [User!]!
 }
 

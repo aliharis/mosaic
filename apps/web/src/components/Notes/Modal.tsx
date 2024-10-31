@@ -5,6 +5,7 @@ import { debounce } from "lodash";
 // import { useWebSocket } from "../hooks/useWebSocket";
 import UserList from "../UserList";
 import BlockEditor from "../BlockEditor";
+import { useSubscription } from "graphql-hooks";
 
 import { Note, UpdatePayload } from "@/types";
 import { useAuth } from "@/context/auth";
@@ -25,6 +26,28 @@ const colors = [
   "bg-green-50",
 ];
 
+// GraphQL Operations
+const NOTE_UPDATED_SUBSCRIPTION = `
+  subscription NoteUpdated($id: ID!) {
+    noteUpdated(id: $id) {
+      id
+      title
+      content
+      blocks {
+        id
+        type
+        content
+      }
+      color
+      version
+      created
+      createdBy
+      lastEdited
+      lastEditedBy
+    }
+  }
+`;
+
 export default function NoteModal({
   note,
   onClose,
@@ -38,54 +61,45 @@ export default function NoteModal({
   const titleRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
 
-  // // Initialize WebSocket connection
-  // const ws = useWebSocket(note.id, handleWebSocketMessage);
+  // Define subscription options outside the component or use useMemo
+  const subscriptionOptions = React.useMemo(
+    () => ({
+      query: NOTE_UPDATED_SUBSCRIPTION,
+      variables: { id: note.id },
+    }),
+    [note.id]
+  );
 
-  // Handle incoming WebSocket messages
-  // const handleWebSocketMessage = useCallback(
-  //   (data: any) => {
-  //     if (data.type === "update" && data.payload.noteId === note.id) {
-  //       const { changes, version, userId } = data.payload;
+  useSubscription(subscriptionOptions, ({ data, errors }) => {
+    // TODO: handle errors
+    if (errors && errors.length > 0) {
+      console.log(errors);
+      return;
+    }
 
-  //       // Only apply changes from other users
-  //       if (userId !== currentUser.id) {
-  //         setLocalNote((prev) => ({
-  //           ...prev,
-  //           ...changes,
-  //           version,
-  //         }));
-  //       }
-  //     }
-  //   },
-  //   [note.id, currentUser.id]
-  // );
+    const updatedNote = data.noteUpdated;
 
+    // Prevent applying our own updates twice
+    if (updatedNote.modifiedBy !== user?.id) {
+      // If the incoming version is newer than our local version
+      if (updatedNote.version > localNote.version) {
+        setLocalNote((prevNote) => ({
+          ...prevNote,
+          ...updatedNote,
+        }));
+      }
+    }
+  });
   // Debounced update function
   const debouncedUpdate = useCallback(
     debounce((changes: Partial<Note>) => {
       setIsSaving(true);
-      // const updatePayload: UpdatePayload = {
-      //   noteId: note.id,
-      //   changes,
-      //   version: localNote.version + 1,
-      //   userId: currentUser.id,
-      // };
-
-      // Send update through WebSocket
-      // if (ws) {
-      //   ws.send(
-      //     JSON.stringify({
-      //       type: "update",
-      //       payload: updatePayload,
-      //     })
-      //   );
-      // }
 
       // Update parent state
       onUpdate(note.id, changes, localNote.version + 1);
       setIsSaving(false);
-    }, 1000),
-    [note.id, localNote.version, user.id, onUpdate]
+    }, 3000),
+    [note.id, localNote.version, user?.id, onUpdate]
   );
 
   // Handle local changes

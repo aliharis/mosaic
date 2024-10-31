@@ -23,6 +23,9 @@ importers:
       graphql-hooks:
         specifier: ^8.0.1
         version: 8.0.1(graphql@16.9.0)(react@18.3.1)
+      graphql-ws:
+        specifier: ^5.16.0
+        version: 5.16.0(graphql@16.9.0)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
