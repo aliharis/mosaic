@@ -1,7 +1,7 @@
 import { db } from "../config/database";
 import { notes, noteToUsers } from "../db/schema";
 import { eq } from "drizzle-orm";
-import { sql } from "drizzle-orm";
+import { createPubSub } from "@graphql-yoga/subscription";
 
 interface NoteInput {
   id: string;
@@ -21,6 +21,9 @@ interface UpdateNoteInput {
 }
 
 interface ResolverContext {}
+
+const pubsub = createPubSub();
+const NOTE_UPDATED = "NOTE_UPDATED";
 
 export default {
   Query: {
@@ -100,6 +103,12 @@ export default {
         })
         .where(eq(notes.id, id))
         .returning();
+
+      // Publish the update to all subscribers
+      pubsub.publish(`${NOTE_UPDATED}.${id}`, {
+        noteUpdated: updatedNote,
+      });
+
       return updatedNote;
     },
 
@@ -112,7 +121,15 @@ export default {
         .delete(notes)
         .where(eq(notes.id, id))
         .returning();
+
       return deletedNote;
+    },
+  },
+  Subscription: {
+    noteUpdated: {
+      subscribe: (_: any, { id }: { id: string }) =>
+        pubsub.subscribe(`${NOTE_UPDATED}.${id}`),
+      resolve: (payload: any) => payload.noteUpdated,
     },
   },
   Note: {

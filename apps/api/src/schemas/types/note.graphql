@@ -38,3 +38,7 @@ extend type Mutation {
   deleteNote(id: ID!): Note!
   addUserToNote(noteId: ID!, userId: ID!): Note!
 }
+
+extend type Subscription {
+  noteUpdated(id: ID!): Note
+}
