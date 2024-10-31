@@ -77,6 +77,7 @@ pnpm dev:api
 
 ## Available Scripts
 
+- `pnpm setup-env` - Setup the environment variables for all the projects
 - `pnpm dev` - Start all applications in development mode
 - `pnpm build` - Build all applications
 - `pnpm dev:web` - Start only the web application
