@@ -1,6 +1,37 @@
-# mosaic
+# Mosaic - Real-time Collaborative Notes System
 
-This monorepo for Mosaic contains a web application and GraphQL API server.
+Mosaic is a modern, real-time collaborative notes system built with scalability and performance in mind. It features a robust architecture that supports simultaneous editing, custom note ordering, and seamless offline capabilities.
+
+🚧 **Coming Soon**
+
+- Smart drag-and-drop note organization using LexoRank
+- Optimized performance with debounced sync and efficient caching
+- Enhanced collaboration (cursors, rich text, version history)
+- Full offline support with CRDT-based sync
+- Advanced organization (hierarchical notes, tags, search)
+- Security features (E2E encryption, access controls, team sharing)
+
+## Technical Stack
+
+- **Frontend**
+
+  - React
+  - TypeScript
+  - TailwindCSS
+  - GraphQL/WebSocket Client
+  - Zustand for state management
+  - Vite/Vitest
+
+- **Backend**
+  - Node.js
+  - TypeScript
+  - GraphQL Yoga
+  - WebSocket Server
+  - PostgreSQL with Drizzle ORM
+
+## Project Status
+
+The project is currently in active development with basic real-time collaboration features implemented.
 
 ## Project Structure
 
@@ -9,7 +40,7 @@ This monorepo for Mosaic contains a web application and GraphQL API server.
 ├── apps/
 │   ├── web/          # Frontend web application
 │   │   └── ...
-│   └── api/          # GraphQL Yoga server
+│   └── api/          # GraphQL API
 │       └── ...
 ├── package.json
 └── pnpm-workspace.yaml
