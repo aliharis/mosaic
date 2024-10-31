@@ -124,8 +124,7 @@ export default function Notes() {
                 key={note.id}
                 note={note}
                 onDelete={deleteNote}
-                onColorChange={changeNoteColor}
-                onContentChange={updateNoteContent}
+                onUpdate={handleNoteUpdate}
                 onNoteClick={() => setSelectedNote(note)}
               />
             ))}

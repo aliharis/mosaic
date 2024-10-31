@@ -13,8 +13,10 @@ interface NoteInput {
 }
 
 interface UpdateNoteInput {
-  color: string;
-  blocks: any[];
+  title: string | null;
+  color: string | null;
+  blocks: any[] | null;
+  version: number;
   lastEdited: Date;
 }
 
@@ -90,7 +92,11 @@ export default {
       const [updatedNote] = await db
         .update(notes)
         .set({
-          blocks: changes.blocks,
+          ...(changes.title !== null && { title: changes.title }),
+          ...(changes.color !== null && { color: changes.color }),
+          ...(changes.blocks !== null && { blocks: changes.blocks }),
+          version: changes.version,
+          lastEdited: changes.lastEdited,
         })
         .where(eq(notes.id, id))
         .returning();

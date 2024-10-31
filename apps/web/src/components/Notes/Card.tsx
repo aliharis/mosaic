@@ -1,17 +1,13 @@
-import React from "react";
-import { Palette, Tag, Trash2, Clock } from "lucide-react";
-import type { LiveNote } from "../types";
-import UserList from "./UserList";
+import { debounce } from "lodash";
+import { Clock, Palette, Trash2 } from "lucide-react";
+import React, { useCallback } from "react";
+import type { Note } from "@/types";
+import UserList from "../UserList";
 
 interface NoteCardProps {
-  note: LiveNote;
+  note: Note;
   onDelete: (id: string) => void;
-  onColorChange: (id: string, color: string) => void;
-  onContentChange: (
-    id: string,
-    field: "title" | "content",
-    value: string
-  ) => void;
+  onUpdate: (id: string, changes: Partial<Note>, version: number) => void;
   onNoteClick: () => void;
 }
 
@@ -27,10 +23,10 @@ const colors = [
 export default function NoteCard({
   note,
   onDelete,
-  onColorChange,
-  onContentChange,
+  onUpdate,
   onNoteClick,
 }: NoteCardProps) {
+  const [localNote, setLocalNote] = React.useState(note);
   const [showColors, setShowColors] = React.useState(false);
 
   const handleClick = (e: React.MouseEvent) => {
@@ -41,10 +37,32 @@ export default function NoteCard({
     }
   };
 
+  // Debounced update function to limit the number of HTTP requests
+  const debouncedUpdate = useCallback(
+    (changes: Partial<Note>) => {
+      debounce(() => {
+        // Update parent state
+        onUpdate(note.id, changes, note.version);
+      }, 1000)();
+    },
+    [note.id, note.version, onUpdate]
+  );
+
+  // Handle local changes
+  const handleChange = (field: keyof Note, value: string) => {
+    const changes = {
+      [field]: value,
+      version: note.version + 1,
+      lastEdited: new Date(),
+    };
+    setLocalNote((prev) => ({ ...prev, ...changes }));
+    debouncedUpdate(changes);
+  };
+
   return (
     <div
       onClick={handleClick}
-      className={`${note.color} group cursor-pointer rounded-lg border border-gray-200 p-4 shadow-sm transition-all hover:shadow-md`}
+      className={`${localNote.color} group cursor-pointer rounded-lg border border-gray-200 p-4 shadow-sm transition-all hover:shadow-md`}
     >
       <div className="mb-3 flex items-center justify-between">
         {note.activeUsers && <UserList users={note.activeUsers} />}
@@ -57,8 +75,8 @@ export default function NoteCard({
       <div className="space-y-2">
         <input
           type="text"
-          value={note.title}
-          onChange={(e) => onContentChange(note.id, "title", e.target.value)}
+          value={localNote.title}
+          onChange={(e) => handleChange("title", e.target.value)}
           placeholder="Title"
           className="w-full bg-transparent text-lg font-medium outline-none placeholder:text-gray-400"
           onClick={(e) => e.stopPropagation()}
@@ -90,7 +108,7 @@ export default function NoteCard({
                     key={color}
                     onClick={(e) => {
                       e.stopPropagation();
-                      onColorChange(note.id, color);
+                      handleChange("color", color);
                       setShowColors(false);
                     }}
                     className={`h-6 w-6 rounded-full ${color} border hover:shadow-md`}
@@ -99,13 +117,13 @@ export default function NoteCard({
               </div>
             )}
           </div>
-
-          <button
+          {/* To be implemented */}
+          {/* <button
             onClick={(e) => e.stopPropagation()}
             className="rounded-full p-2 hover:bg-black/5"
           >
             <Tag className="h-4 w-4 text-gray-600" />
-          </button>
+          </button> */}
         </div>
 
         <button

@@ -1,5 +1,5 @@
 // components/NoteModal.tsx
-import React, { useRef, useEffect, useCallback } from "react";
+import React, { useRef, useEffect, useCallback, version } from "react";
 import { X, Palette, Trash2, Clock } from "lucide-react";
 import { debounce } from "lodash";
 // import { useWebSocket } from "../hooks/useWebSocket";
@@ -89,10 +89,12 @@ export default function NoteModal({
   );
 
   // Handle local changes
-  const handleChange = (field: keyof Note, value: any) => {
-    console.log("handleChange", field, value);
-
-    const changes = { [field]: value, lastEdited: new Date() };
+  const handleChange = (field: keyof Note, value: string) => {
+    const changes = {
+      [field]: value,
+      version: localNote.version + 1,
+      lastEdited: new Date(),
+    };
     setLocalNote((prev) => ({ ...prev, ...changes }));
     debouncedUpdate(changes);
   };
@@ -175,7 +177,7 @@ export default function NoteModal({
                     <button
                       key={color}
                       onClick={() => {
-                        onColorChange(note.id, color);
+                        handleChange("color", color);
                         setShowColors(false);
                       }}
                       className={`h-6 w-6 rounded-full ${color} border hover:shadow-md`}

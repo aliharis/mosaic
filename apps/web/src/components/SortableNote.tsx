@@ -1,25 +1,19 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { LiveNote } from "../types";
-import NoteCard from "@/components/NoteCard";
+import type { Note } from "@/types";
+import NoteCard from "@/components/Notes/Card";
 
 interface SortableNoteProps {
-  note: LiveNote;
+  note: Note;
   onDelete: (id: string) => void;
-  onColorChange: (id: string, color: string) => void;
-  onContentChange: (
-    id: string,
-    field: "title" | "content",
-    value: string
-  ) => void;
+  onUpdate: (id: string, changes: Partial<Note>, version: number) => void;
   onNoteClick: () => void;
 }
 
 export default function SortableNote({
   note,
   onDelete,
-  onColorChange,
-  onContentChange,
+  onUpdate,
   onNoteClick,
 }: SortableNoteProps) {
   const {
@@ -43,8 +37,7 @@ export default function SortableNote({
       <NoteCard
         note={note}
         onDelete={onDelete}
-        onColorChange={onColorChange}
-        onContentChange={onContentChange}
+        onUpdate={onUpdate}
         onNoteClick={onNoteClick}
       />
     </div>

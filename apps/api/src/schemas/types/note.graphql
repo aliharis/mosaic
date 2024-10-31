@@ -20,8 +20,10 @@ input CreateNoteInput {
 }
 
 input UpdateNoteInput {
+  title: String
   color: String
-  blocks: [BlockInput!]!
+  blocks: [BlockInput!]
+  version: Int!
   lastEdited: DateTime
 }
 
