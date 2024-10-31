@@ -2,6 +2,7 @@ version: 1
 buildCommand: pnpm install --frozen-lockfile
 services:
   - type: web
+    runtime: node
     name: mosaic-api
     env: node
     rootDir: apps/api
@@ -17,7 +18,8 @@ services:
       - key: JWT_SECRET
         fromGroup: mosaic-prod
 
-  - type: static
+  - type: web
+    runtime: static
     name: mosaic-web
     rootDir: apps/web
     buildCommand: pnpm install --frozen-lockfile && pnpm build
