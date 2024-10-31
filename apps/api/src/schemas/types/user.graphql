@@ -6,8 +6,10 @@ type User {
 }
 
 input CreateUserInput {
+  id: ID!
   name: String!
   color: String!
+  lastActive: DateTime!
 }
 
 extend type Query {

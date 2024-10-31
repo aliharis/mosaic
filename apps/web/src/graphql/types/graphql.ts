@@ -42,14 +42,19 @@ export type CreateNoteInput = {
   blocks: Array<BlockInput>;
   color: Scalars['String']['input'];
   content: Scalars['String']['input'];
+  created: Scalars['DateTime']['input'];
+  createdBy: Scalars['String']['input'];
   id: Scalars['String']['input'];
   lastEdited: Scalars['DateTime']['input'];
+  lastEditedBy: Scalars['String']['input'];
   title: Scalars['String']['input'];
   version: Scalars['Int']['input'];
 };
 
 export type CreateUserInput = {
   color: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+  lastActive: Scalars['DateTime']['input'];
   name: Scalars['String']['input'];
 };
 
@@ -94,8 +99,11 @@ export type Note = {
   blocks: Array<Block>;
   color: Scalars['String']['output'];
   content: Scalars['String']['output'];
+  created: Scalars['DateTime']['output'];
+  createdBy: User;
   id: Scalars['ID']['output'];
   lastEdited: Scalars['DateTime']['output'];
+  lastEditedBy: User;
   title: Scalars['String']['output'];
   version: Scalars['Int']['output'];
 };
@@ -118,10 +126,22 @@ export type QueryUserArgs = {
   id: Scalars['ID']['input'];
 };
 
+export type Subscription = {
+  _empty?: Maybe<Scalars['String']['output']>;
+  noteUpdated?: Maybe<Note>;
+};
+
+
+export type SubscriptionNoteUpdatedArgs = {
+  id: Scalars['ID']['input'];
+};
+
 export type UpdateNoteInput = {
-  blocks: Array<BlockInput>;
+  blocks?: InputMaybe<Array<BlockInput>>;
   color?: InputMaybe<Scalars['String']['input']>;
   lastEdited?: InputMaybe<Scalars['DateTime']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  version: Scalars['Int']['input'];
 };
 
 export type User = {

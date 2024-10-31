@@ -40,10 +40,17 @@ export const notes = pgTable("notes", {
   id: uuid("id").primaryKey().default(generateUuid),
   title: text("title").notNull(),
   content: text("content").notNull(),
+  blocks: jsonb("blocks").notNull().$type<Block[]>().default([]),
   color: text("color").notNull(),
   version: integer("version").notNull().default(1),
+  created: timestamp("created").notNull().defaultNow(),
+  createdBy: uuid("created_by")
+    .references(() => users.id)
+    .notNull(),
   lastEdited: timestamp("last_edited").notNull().defaultNow(),
-  blocks: jsonb("blocks").notNull().$type<Block[]>().default([]),
+  lastEditedBy: uuid("last_edited_by")
+    .references(() => users.id)
+    .notNull(),
 });
 
 export const noteToUsers = pgTable("note_to_users", {

@@ -2,10 +2,13 @@ type Note {
   id: ID!
   title: String!
   content: String!
+  blocks: [Block!]!
   color: String!
   version: Int!
+  created: DateTime!
+  createdBy: User!
   lastEdited: DateTime!
-  blocks: [Block!]!
+  lastEditedBy: User!
   activeUsers: [User!]!
 }
 
@@ -13,10 +16,13 @@ input CreateNoteInput {
   id: String!
   title: String!
   content: String!
-  color: String!
   blocks: [BlockInput!]!
+  color: String!
   version: Int!
+  created: DateTime!
+  createdBy: String!
   lastEdited: DateTime!
+  lastEditedBy: String!
 }
 
 input UpdateNoteInput {

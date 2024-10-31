@@ -1,5 +1,5 @@
 {
-  "id": "aeddcb35-7a75-4385-941f-07b12b590352",
+  "id": "84b56b7c-a111-474a-95a8-c40a23e4214f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -77,6 +77,13 @@
           "primaryKey": false,
           "notNull": true
         },
+        "blocks": {
+          "name": "blocks",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
         "color": {
           "name": "color",
           "type": "text",
@@ -90,6 +97,19 @@
           "notNull": true,
           "default": 1
         },
+        "created": {
+          "name": "created",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_by": {
+          "name": "created_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
         "last_edited": {
           "name": "last_edited",
           "type": "timestamp",
@@ -97,16 +117,42 @@
           "notNull": true,
           "default": "now()"
         },
-        "blocks": {
-          "name": "blocks",
-          "type": "jsonb",
+        "last_edited_by": {
+          "name": "last_edited_by",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": true,
-          "default": "'[]'::jsonb"
+          "notNull": true
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "notes_created_by_users_id_fk": {
+          "name": "notes_created_by_users_id_fk",
+          "tableFrom": "notes",
+          "tableTo": "users",
+          "columnsFrom": [
+            "created_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "notes_last_edited_by_users_id_fk": {
+          "name": "notes_last_edited_by_users_id_fk",
+          "tableFrom": "notes",
+          "tableTo": "users",
+          "columnsFrom": [
+            "last_edited_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}

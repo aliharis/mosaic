@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { User } from "@/types";
+import { CREATE_USER_MUTATION } from "@/graphql/mutations/user";
+import { client } from "@/utils/graphql-client";
 
 interface AuthContextType {
   user: User | null;
@@ -28,13 +30,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loadUser();
   }, []);
 
-  const login = (profile: Omit<User, "id" | "lastActive">) => {
+  const login = async (profile: Omit<User, "id" | "lastActive">) => {
     const newUser: User = {
-      id: `user-${Date.now()}`, // Generate a unique ID
+      id: crypto.randomUUID(),
       name: profile.name,
       color: profile.color,
       lastActive: new Date(),
     };
+
+    // Save the user to the database
+    const { error } = await client.request({
+      query: CREATE_USER_MUTATION,
+      variables: { input: newUser },
+    });
+
+    if (error) {
+      console.error("Error creating user:", error);
+    }
+
     setUser(newUser);
     localStorage.setItem("userProfile", JSON.stringify(newUser));
   };

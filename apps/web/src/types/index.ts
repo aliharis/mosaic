@@ -22,10 +22,13 @@ export interface Note {
   id: string;
   title: string;
   content: string;
+  blocks: Block[];
   color: string;
   version: number;
+  created: Date;
+  createdBy: string;
   lastEdited: Date;
-  blocks: Block[];
+  lastEditedBy: string;
   activeUsers?: User[];
 }
 

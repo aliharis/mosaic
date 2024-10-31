@@ -47,10 +47,13 @@ const useNotesStore = create<NotesState>((set) => ({
         id: noteData.id,
         title: noteData.title,
         content: noteData.content,
-        color: noteData.color,
-        version: 1,
         blocks: noteData.blocks as BlockInput[],
-        lastEdited: new Date(),
+        color: noteData.color,
+        version: noteData.version,
+        created: noteData.created,
+        createdBy: noteData.createdBy,
+        lastEdited: noteData.lastEdited,
+        lastEditedBy: noteData.lastEditedBy,
       };
 
       // Update local state optimistically

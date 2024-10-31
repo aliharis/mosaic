@@ -15,6 +15,7 @@ import NoteModal from "./Modal";
 import SortableNote from "../SortableNote";
 import useNotesStore from "@/store/useNotesStore";
 import { Block, Note } from "@/types";
+import { useAuth } from "@/context/auth";
 
 const GET_NOTES = `
   query GetNotes {
@@ -53,6 +54,7 @@ export default function Notes() {
   } = useNotesStore();
 
   const { data, loading, error } = useQuery(GET_NOTES);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (data) {
@@ -79,15 +81,17 @@ export default function Notes() {
       id: crypto.randomUUID(),
       title: "",
       content: "",
-      color: "bg-white",
-      lastEdited: new Date(),
       blocks: [{ id: "1", type: "paragraph", content: "" } as Block],
+      color: "bg-white",
       version: 0,
+      created: new Date(),
+      createdBy: user?.id,
+      lastEdited: new Date(),
+      lastEditedBy: user?.id,
     };
     addNote(newNote);
     setSelectedNote(newNote as Note);
-    console.log(selectedNote);
-  }, [addNote, selectedNote, setSelectedNote]);
+  }, [addNote, setSelectedNote, user]);
 
   useEffect(() => {
     if (isNewNoteModalOpen) {

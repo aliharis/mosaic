@@ -7,9 +7,13 @@ interface NoteInput {
   id: string;
   title: string;
   content: string;
-  color: string;
   blocks: any[];
-  createdAt: Date;
+  color: string;
+  version: number;
+  created: Date;
+  createdBy: string;
+  lastEdited: Date;
+  lastEditedBy: string;
 }
 
 interface UpdateNoteInput {
@@ -18,6 +22,7 @@ interface UpdateNoteInput {
   blocks: any[] | null;
   version: number;
   lastEdited: Date;
+  lastEditedBy: string;
 }
 
 interface ResolverContext {}
@@ -60,8 +65,13 @@ export default {
           id: note.id,
           title: note.title,
           content: note.content,
-          color: note.color,
           blocks: note.blocks,
+          color: note.color,
+          version: note.version,
+          created: note.created,
+          createdBy: note.createdBy,
+          lastEdited: note.lastEdited,
+          lastEditedBy: note.lastEditedBy,
         })
         .returning();
       return newNote;
@@ -100,6 +110,7 @@ export default {
           ...(changes.blocks !== null && { blocks: changes.blocks }),
           version: changes.version,
           lastEdited: changes.lastEdited,
+          lastEditedBy: changes.lastEditedBy,
         })
         .where(eq(notes.id, id))
         .returning();
