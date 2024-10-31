@@ -1,0 +1,29 @@
+version: 1
+buildCommand: pnpm install --frozen-lockfile
+services:
+  - type: web
+    name: mosaic-api
+    env: node
+    rootDir: apps/api
+    buildCommand: pnpm install --frozen-lockfile && pnpm build
+    startCommand: pnpm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 80
+      - key: DATABASE_URL
+        fromGroup: mosaic-prod
+      - key: JWT_SECRET
+        fromGroup: mosaic-prod
+
+  - type: static
+    name: mosaic-web
+    rootDir: apps/web
+    buildCommand: pnpm install --frozen-lockfile && pnpm build
+    publishDir: dist
+    envVars:
+      - key: VITE_GRAPHQL_API_URL
+        fromGroup: mosaic-prod
+      - key: VITE_GRAPHQL_WS_API_URL
+        fromGroup: mosaic-prod

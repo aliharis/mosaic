@@ -25,6 +25,6 @@ const wsServer = new WebSocketServer({
 useServer({ schema }, wsServer);
 
 // Start the server and you're done!
-server.listen(4000, () => {
-  console.info("Server is running on http://localhost:4000/graphql");
+server.listen(process.env.PORT || 4000, () => {
+  console.info(`Server is running on port ${process.env.PORT || 4000}`);
 });

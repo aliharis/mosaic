@@ -1,6 +1,9 @@
 {
   "name": "mosaic-monorepo",
   "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
     "setup-env": "node scripts/setup-env.js",
     "dev": "pnpm --parallel -r run dev",
