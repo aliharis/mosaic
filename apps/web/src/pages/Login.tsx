@@ -1,6 +1,7 @@
 import { useAuth } from "@/context/auth";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/common/Button";
 
 const PROFILE_COLORS = [
   "#FFB5E8", // Pink
@@ -16,6 +17,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [color, setColor] = useState(PROFILE_COLORS[0]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -26,7 +28,9 @@ export default function Login() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim()) {
+      setIsLoading(true);
       login({ name: name.trim(), color });
+      setIsLoading(false);
       navigate("/dashboard");
     }
   };
@@ -82,13 +86,9 @@ export default function Login() {
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={!name.trim()}
-            className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 disabled:bg-gray-400"
-          >
+          <Button disabled={!name.trim()} fullWidth isLoading={isLoading}>
             Get Started
-          </button>
+          </Button>
         </form>
       </div>
     </div>
