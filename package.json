@@ -11,6 +11,9 @@
     "dev:api": "pnpm -F api dev",
     "build": "pnpm -r run build",
     "build:web": "pnpm -F web build",
-    "build:api": "pnpm -F api build"
+    "build:api": "pnpm -F api build",
+    "codegen": "pnpm -r run codegen",
+    "codegen:watch": "pnpm --parallel -r run codegen:watch",
+    "dev:full": "pnpm --parallel run codegen:watch dev"
   }
 }
