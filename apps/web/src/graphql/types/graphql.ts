@@ -58,12 +58,26 @@ export type CreateUserInput = {
   name: Scalars['String']['input'];
 };
 
+export type LoginInput = {
+  color: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+  lastActive: Scalars['DateTime']['input'];
+  name: Scalars['String']['input'];
+};
+
+export type LoginResponse = {
+  token: Scalars['String']['output'];
+  user: User;
+};
+
 export type Mutation = {
   _empty?: Maybe<Scalars['String']['output']>;
   addUserToNote: Note;
   createNote: Note;
+  /** @deprecated Use login instead */
   createUser: User;
   deleteNote: Note;
+  login: LoginResponse;
   updateNote: Note;
 };
 
@@ -89,6 +103,11 @@ export type MutationDeleteNoteArgs = {
 };
 
 
+export type MutationLoginArgs = {
+  input: LoginInput;
+};
+
+
 export type MutationUpdateNoteArgs = {
   changes: UpdateNoteInput;
   id: Scalars['ID']['input'];
@@ -100,10 +119,10 @@ export type Note = {
   color: Scalars['String']['output'];
   content: Scalars['String']['output'];
   created: Scalars['DateTime']['output'];
-  createdBy: User;
+  createdBy: Scalars['ID']['output'];
   id: Scalars['ID']['output'];
   lastEdited: Scalars['DateTime']['output'];
-  lastEditedBy: User;
+  lastEditedBy: Scalars['ID']['output'];
   title: Scalars['String']['output'];
   version: Scalars['Int']['output'];
 };
@@ -113,7 +132,7 @@ export type Query = {
   note?: Maybe<Note>;
   notes: Array<Note>;
   user?: Maybe<User>;
-  users: Array<User>;
+  users?: Maybe<Array<User>>;
 };
 
 

@@ -14,6 +14,9 @@
     "build:api": "pnpm -F api build",
     "codegen": "pnpm -r run codegen",
     "codegen:watch": "pnpm --parallel -r run codegen:watch",
-    "dev:full": "pnpm --parallel run codegen:watch dev"
+    "dev:full": "concurrently \"pnpm dev:api\" \"pnpm dev:web\" \"pnpm codegen:watch\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
   }
 }

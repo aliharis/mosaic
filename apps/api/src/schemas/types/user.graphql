@@ -12,6 +12,18 @@ input CreateUserInput {
   lastActive: DateTime!
 }
 
+input LoginInput {
+  id: ID!
+  name: String!
+  color: String!
+  lastActive: DateTime!
+}
+
+type LoginResponse {
+  user: User!
+  token: String!
+}
+
 extend type Query {
   users: [User!]
   user(id: ID!): User
@@ -19,4 +31,6 @@ extend type Query {
 
 extend type Mutation {
   createUser(input: CreateUserInput!): User!
+    @deprecated(reason: "Use login instead")
+  login(input: LoginInput!): LoginResponse!
 }
