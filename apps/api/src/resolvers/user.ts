@@ -1,5 +1,5 @@
-import { db } from "@/config/database";
-import { users } from "@/db/schema";
+import { db } from "../config/database";
+import { users } from "../db/schema";
 import { eq } from "drizzle-orm";
 
 // Add these types

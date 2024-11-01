@@ -1,5 +1,5 @@
-import { db } from "@/config/database";
-import { notes, noteToUsers } from "@/db/schema";
+import { db } from "../config/database";
+import { notes, noteToUsers } from "../db/schema";
 import { eq } from "drizzle-orm";
 import { createPubSub } from "@graphql-yoga/subscription";
 
@@ -23,6 +23,13 @@ interface UpdateNoteInput {
   version: number;
   lastEdited: Date;
   lastEditedBy: string;
+}
+
+interface User {
+  id: string;
+  name: string;
+  color: string;
+  lastActive: Date;
 }
 
 const pubsub = createPubSub();
@@ -151,7 +158,7 @@ export default {
           user: true,
         },
       });
-      return userConnections.map((conn) => conn.user);
+      return userConnections.map((conn: { user: User }) => conn.user);
     },
   },
 };

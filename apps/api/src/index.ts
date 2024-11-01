@@ -1,5 +1,5 @@
 import { useServer } from "graphql-ws/lib/use/ws";
-import { createYoga } from "@graphql-yoga/node";
+import { createYoga } from "graphql-yoga";
 import { createServer } from "node:http";
 import { WebSocketServer } from "ws";
 import { schema } from "./schemas/index";

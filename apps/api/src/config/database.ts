@@ -5,6 +5,7 @@ import "dotenv/config";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-});
+}) as Pool;
 
 export const db = drizzle(pool, { schema: schemaWithRelations });
+export type DB = typeof db;
