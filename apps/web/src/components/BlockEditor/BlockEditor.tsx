@@ -17,7 +17,7 @@ import Block from "./Block";
 import BlockMenu from "./BlockMenu";
 import type { Block as BlockType } from "../../types";
 
-interface BlockEditorProps {
+export interface BlockEditorProps {
   blocks: BlockType[];
   onChange: (blocks: BlockType[]) => void;
 }
@@ -90,11 +90,8 @@ export default function BlockEditor({ blocks, onChange }: BlockEditorProps) {
 
   const handleKeyDown = useCallback(
     (id: string, e: React.KeyboardEvent) => {
-      console.log("handleKeyDown", id, e.key);
       const block = blocks.find((b) => b.id === id);
       if (!block) return;
-
-      console.log("block", block);
 
       if (e.key === "/") {
         e.preventDefault();

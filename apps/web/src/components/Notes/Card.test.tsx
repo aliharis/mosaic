@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import NoteCard from "../Notes/NoteCard";
+import NoteCard from "./Card";
+import { Block } from "@/types";
 
 describe("NoteCard", () => {
   const mockNote = {
@@ -8,24 +9,36 @@ describe("NoteCard", () => {
     title: "Test Note",
     content: "Test Content",
     color: "bg-white",
-    pinned: false,
+    blocks: [
+      {
+        type: "paragraph",
+        content: "Test Content",
+      } as Block,
+    ],
+    version: 1,
+    created: new Date(),
+    createdBy: "test-user",
+    lastEdited: new Date(),
+    lastEditedBy: "test-user",
   };
 
   const mockProps = {
     note: mockNote,
     onDelete: vi.fn(),
     onColorChange: vi.fn(),
+    onUpdate: vi.fn(),
+    onNoteClick: vi.fn(),
   };
-
   it("renders note title and content", () => {
-    render(<NoteCard {...mockProps} />);
+    render(<NoteCard {...mockProps} note={mockNote} />);
 
+    // Check if the note title is there as the value of the input
     expect(screen.getByDisplayValue("Test Note")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("Test Content")).toBeInTheDocument();
+    expect(screen.getByText("Test Content")).toBeInTheDocument();
   });
 
   it("calls onDelete when delete button is clicked", () => {
-    render(<NoteCard {...mockProps} />);
+    render(<NoteCard {...mockProps} note={mockNote} />);
 
     const deleteButton = screen.getByRole("button", { name: /delete/i });
     fireEvent.click(deleteButton);
@@ -34,7 +47,7 @@ describe("NoteCard", () => {
   });
 
   it("shows color picker when palette button is clicked", () => {
-    render(<NoteCard {...mockProps} />);
+    render(<NoteCard {...mockProps} note={mockNote} />);
 
     const paletteButton = screen.getByRole("button", { name: /palette/i });
     fireEvent.click(paletteButton);

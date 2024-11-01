@@ -99,6 +99,7 @@ export default function NoteCard({
         <div className="flex gap-2">
           <div className="relative">
             <button
+              aria-label="palette"
               onClick={(e) => {
                 e.stopPropagation();
                 setShowColors(!showColors);
@@ -134,6 +135,7 @@ export default function NoteCard({
         </div>
 
         <button
+          aria-label="delete"
           onClick={(e) => {
             e.stopPropagation();
             onDelete(note.id);

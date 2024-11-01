@@ -4,7 +4,7 @@ import { X, Palette, Trash2, Clock } from "lucide-react";
 import { debounce } from "lodash";
 // import { useWebSocket } from "../hooks/useWebSocket";
 import UserList from "../UserList";
-import BlockEditor from "../BlockEditor";
+import BlockEditor from "../BlockEditor/BlockEditor";
 import { useSubscription } from "graphql-hooks";
 
 import { Note, UpdatePayload } from "@/types";
