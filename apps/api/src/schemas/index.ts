@@ -1,7 +1,6 @@
 import { loadFilesSync } from "@graphql-tools/load-files";
-import { mergeTypeDefs, mergeResolvers } from "@graphql-tools/merge";
+import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import { DateTimeResolver } from "graphql-scalars";
 import path from "path";
 
 const typesArray = loadFilesSync(path.join(__dirname, "./types"), {

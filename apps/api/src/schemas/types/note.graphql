@@ -1,3 +1,26 @@
+type Block {
+  id: ID!
+  type: BlockType!
+  content: String!
+}
+
+enum BlockType {
+  paragraph
+  heading1
+  heading2
+  heading3
+  bulletList
+  numberedList
+  quote
+  code
+}
+
+input BlockInput {
+  id: ID!
+  type: BlockType!
+  content: String!
+}
+
 type Note {
   id: ID!
   title: String!

@@ -1,5 +1,5 @@
-import { db } from "../config/database";
-import { notes, noteToUsers } from "../db/schema";
+import { db } from "@/config/database";
+import { notes, noteToUsers } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { createPubSub } from "@graphql-yoga/subscription";
 
@@ -24,8 +24,6 @@ interface UpdateNoteInput {
   lastEdited: Date;
   lastEditedBy: string;
 }
-
-interface ResolverContext {}
 
 const pubsub = createPubSub();
 const NOTE_UPDATED = "NOTE_UPDATED";
@@ -136,6 +134,7 @@ export default {
       return deletedNote;
     },
   },
+
   Subscription: {
     noteUpdated: {
       subscribe: (_: any, { id }: { id: string }) =>
@@ -143,6 +142,7 @@ export default {
       resolve: (payload: any) => payload.noteUpdated,
     },
   },
+
   Note: {
     activeUsers: async (note: { id: string }): Promise<any[]> => {
       const userConnections = await db.query.noteToUsers.findMany({

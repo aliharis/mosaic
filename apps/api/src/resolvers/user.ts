@@ -1,9 +1,15 @@
-import { db } from "../config/database";
-import { users } from "../db/schema";
+import { db } from "@/config/database";
+import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 // Add these types
-type User = typeof users.$inferSelect;
+type User = {
+  id: string;
+  name: string;
+  color: string;
+  lastActive: Date;
+};
+
 type CreateUserInput = {
   id: string;
   name: string;
@@ -16,12 +22,15 @@ export default {
     users: async (): Promise<User[]> => {
       return await db.query.users.findMany();
     },
-    user: async (_: any, { id }: { id: number }): Promise<User | null> => {
-      return await db.query.users.findFirst({
+
+    user: async (_: any, { id }: { id: string }): Promise<User | null> => {
+      const user = await db.query.users.findFirst({
         where: eq(users.id, id),
       });
+      return user ?? null;
     },
   },
+
   Mutation: {
     createUser: async (
       _: any,
