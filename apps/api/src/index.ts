@@ -3,6 +3,8 @@ import { createYoga } from "graphql-yoga";
 import { createServer } from "node:http";
 import { WebSocketServer } from "ws";
 import { schema } from "./schemas/index";
+import { createContext } from "./context";
+import { useAuth } from "./utils/auth";
 
 // Create a Yoga instance with a GraphQL schema.
 const yoga = createYoga({
@@ -10,6 +12,8 @@ const yoga = createYoga({
   graphiql: {
     subscriptionsProtocol: "WS",
   },
+  context: createContext,
+  plugins: [useAuth()],
 });
 
 // Pass it into a server to hook into request handlers.

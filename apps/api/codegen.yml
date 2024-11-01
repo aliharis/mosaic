@@ -5,5 +5,6 @@ generates:
       - typescript
       - typescript-resolvers
     config:
-      contextType: any
+      contextType: ../context#MyContext
+      exportContextTypes: true
       useIndexSignature: true

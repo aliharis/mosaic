@@ -7,12 +7,17 @@ import {
   LoginResponse,
   User,
 } from "../types/graphql";
+import { MyContext } from "../context";
 import { JWT_SECRET } from "../config/auth";
 import { sign } from "jsonwebtoken";
 
 export default {
   Query: {
-    users: async (): Promise<User[]> => {
+    users: async (
+      parent: any,
+      args: any,
+      context: MyContext
+    ): Promise<User[]> => {
       return await db.query.users.findMany();
     },
 
@@ -72,7 +77,7 @@ export default {
 
       return {
         user: user,
-        token: sign({ id: user.id }, JWT_SECRET),
+        token: sign({ userId: user.id }, JWT_SECRET),
       };
     },
   },
