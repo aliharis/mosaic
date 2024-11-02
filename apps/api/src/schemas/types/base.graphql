@@ -1,11 +1,32 @@
+"""
+Root Query type - all queries must extend from this
+"""
 type Query {
-  _empty: String
+  # Health check query that returns server status
+  healthCheck: HealthCheckResponse!
 }
 
+"""
+Root Mutation type - all mutations must extend from this
+"""
 type Mutation {
-  _empty: String
+  # Ping mutation to verify server is accepting mutations
+  ping: String!
 }
 
+"""
+Root Subscription type - all subscriptions must extend from this
+"""
 type Subscription {
-  _empty: String
+  # Basic subscription to verify real-time functionality
+  keepAlive: Boolean!
+}
+
+"""
+Standard health check response
+"""
+type HealthCheckResponse {
+  status: String!
+  timestamp: String!
+  version: String
 }

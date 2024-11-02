@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --watch src --ext ts,tsx --exec tsx src/index.ts",
+    "clean": "rm -rf dist",
     "build": "tsc && copyfiles -u 1 src/**/*.graphql dist/",
     "start": "node dist/index.js",
     "db:generate": "drizzle-kit generate",
