@@ -47,10 +47,10 @@ export type CreateNoteInput = {
   color: Scalars['String']['input'];
   content: Scalars['String']['input'];
   created: Scalars['DateTime']['input'];
-  createdBy: Scalars['String']['input'];
+  createdBy?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
   lastEdited: Scalars['DateTime']['input'];
-  lastEditedBy: Scalars['String']['input'];
+  lastEditedBy?: InputMaybe<Scalars['String']['input']>;
   title: Scalars['String']['input'];
   version: Scalars['Int']['input'];
 };

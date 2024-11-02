@@ -18,7 +18,7 @@ async function validateToken(token: string): Promise<AuthenticatedUser | null> {
   try {
     const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
     return {
-      id: payload.sub as string,
+      id: payload.userId as string,
     };
   } catch (error) {
     return null;

@@ -43,9 +43,9 @@ input CreateNoteInput {
   color: String!
   version: Int!
   created: DateTime!
-  createdBy: String!
+  createdBy: String
   lastEdited: DateTime!
-  lastEditedBy: String!
+  lastEditedBy: String
 }
 
 input UpdateNoteInput {

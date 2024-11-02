@@ -2,6 +2,8 @@ import { db } from "../config/database";
 import { notes, noteToUsers } from "../db/schema";
 import { eq } from "drizzle-orm";
 import { createPubSub } from "@graphql-yoga/subscription";
+import { MyContext } from "@/context";
+import { Note } from "@/types/graphql";
 
 interface NoteInput {
   id: string;
@@ -63,7 +65,11 @@ export default {
     },
   },
   Mutation: {
-    createNote: async (_: any, { note }: { note: NoteInput }): Promise<any> => {
+    createNote: async (
+      _: any,
+      { note }: { note: NoteInput },
+      context: MyContext
+    ): Promise<Note> => {
       const [newNote] = await db
         .insert(notes)
         .values({
@@ -74,9 +80,9 @@ export default {
           color: note.color,
           version: note.version,
           created: note.created,
-          createdBy: note.createdBy,
+          createdBy: context.currentUser?.id,
           lastEdited: note.lastEdited,
-          lastEditedBy: note.lastEditedBy,
+          lastEditedBy: context.currentUser?.id,
         })
         .returning();
       return newNote;
