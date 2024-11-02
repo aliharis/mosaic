@@ -7,3 +7,14 @@ mutation CreateUser($input: CreateUserInput!) {
   }
 }
 `;
+
+export const LOGIN_MUTATION = `
+mutation Login($input: LoginInput!) {
+  login(input: $input) {
+    token
+    user {
+      id
+    }
+  }
+}
+`;

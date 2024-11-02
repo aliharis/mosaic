@@ -13,7 +13,7 @@ const yoga = createYoga({
     subscriptionsProtocol: "WS",
   },
   context: createContext,
-  plugins: [useAuth()],
+  // plugins: [useAuth()],
 });
 
 // Pass it into a server to hook into request handlers.

@@ -62,6 +62,14 @@ export type CreateUserInput = {
   name: Scalars['String']['input'];
 };
 
+/** Standard health check response */
+export type HealthCheckResponse = {
+  __typename?: 'HealthCheckResponse';
+  status: Scalars['String']['output'];
+  timestamp: Scalars['String']['output'];
+  version?: Maybe<Scalars['String']['output']>;
+};
+
 export type LoginInput = {
   color: Scalars['String']['input'];
   id: Scalars['ID']['input'];
@@ -75,45 +83,52 @@ export type LoginResponse = {
   user: User;
 };
 
+/** Root Mutation type - all mutations must extend from this */
 export type Mutation = {
   __typename?: 'Mutation';
-  _empty?: Maybe<Scalars['String']['output']>;
   addUserToNote: Note;
   createNote: Note;
   /** @deprecated Use login instead */
   createUser: User;
   deleteNote: Note;
   login: LoginResponse;
+  ping: Scalars['String']['output'];
   updateNote: Note;
 };
 
 
+/** Root Mutation type - all mutations must extend from this */
 export type MutationAddUserToNoteArgs = {
   noteId: Scalars['ID']['input'];
   userId: Scalars['ID']['input'];
 };
 
 
+/** Root Mutation type - all mutations must extend from this */
 export type MutationCreateNoteArgs = {
   note: CreateNoteInput;
 };
 
 
+/** Root Mutation type - all mutations must extend from this */
 export type MutationCreateUserArgs = {
   input: CreateUserInput;
 };
 
 
+/** Root Mutation type - all mutations must extend from this */
 export type MutationDeleteNoteArgs = {
   id: Scalars['ID']['input'];
 };
 
 
+/** Root Mutation type - all mutations must extend from this */
 export type MutationLoginArgs = {
   input: LoginInput;
 };
 
 
+/** Root Mutation type - all mutations must extend from this */
 export type MutationUpdateNoteArgs = {
   changes: UpdateNoteInput;
   id: Scalars['ID']['input'];
@@ -134,9 +149,10 @@ export type Note = {
   version: Scalars['Int']['output'];
 };
 
+/** Root Query type - all queries must extend from this */
 export type Query = {
   __typename?: 'Query';
-  _empty?: Maybe<Scalars['String']['output']>;
+  healthCheck: HealthCheckResponse;
   note?: Maybe<Note>;
   notes: Array<Note>;
   user?: Maybe<User>;
@@ -144,22 +160,26 @@ export type Query = {
 };
 
 
+/** Root Query type - all queries must extend from this */
 export type QueryNoteArgs = {
   id: Scalars['ID']['input'];
 };
 
 
+/** Root Query type - all queries must extend from this */
 export type QueryUserArgs = {
   id: Scalars['ID']['input'];
 };
 
+/** Root Subscription type - all subscriptions must extend from this */
 export type Subscription = {
   __typename?: 'Subscription';
-  _empty?: Maybe<Scalars['String']['output']>;
+  keepAlive: Scalars['Boolean']['output'];
   noteUpdated?: Maybe<Note>;
 };
 
 
+/** Root Subscription type - all subscriptions must extend from this */
 export type SubscriptionNoteUpdatedArgs = {
   id: Scalars['ID']['input'];
 };
@@ -259,6 +279,7 @@ export type ResolversTypes = ResolversObject<{
   CreateNoteInput: CreateNoteInput;
   CreateUserInput: CreateUserInput;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
+  HealthCheckResponse: ResolverTypeWrapper<HealthCheckResponse>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   LoginInput: LoginInput;
@@ -280,6 +301,7 @@ export type ResolversParentTypes = ResolversObject<{
   CreateNoteInput: CreateNoteInput;
   CreateUserInput: CreateUserInput;
   DateTime: Scalars['DateTime']['output'];
+  HealthCheckResponse: HealthCheckResponse;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   LoginInput: LoginInput;
@@ -304,6 +326,13 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
   name: 'DateTime';
 }
 
+export type HealthCheckResponseResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['HealthCheckResponse'] = ResolversParentTypes['HealthCheckResponse']> = ResolversObject<{
+  status?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  timestamp?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  version?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type LoginResponseResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['LoginResponse'] = ResolversParentTypes['LoginResponse']> = ResolversObject<{
   token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
@@ -311,12 +340,12 @@ export type LoginResponseResolvers<ContextType = MyContext, ParentType extends R
 }>;
 
 export type MutationResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   addUserToNote?: Resolver<ResolversTypes['Note'], ParentType, ContextType, RequireFields<MutationAddUserToNoteArgs, 'noteId' | 'userId'>>;
   createNote?: Resolver<ResolversTypes['Note'], ParentType, ContextType, RequireFields<MutationCreateNoteArgs, 'note'>>;
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>;
   deleteNote?: Resolver<ResolversTypes['Note'], ParentType, ContextType, RequireFields<MutationDeleteNoteArgs, 'id'>>;
   login?: Resolver<ResolversTypes['LoginResponse'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
+  ping?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updateNote?: Resolver<ResolversTypes['Note'], ParentType, ContextType, RequireFields<MutationUpdateNoteArgs, 'changes' | 'id'>>;
 }>;
 
@@ -336,7 +365,7 @@ export type NoteResolvers<ContextType = MyContext, ParentType extends ResolversP
 }>;
 
 export type QueryResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  healthCheck?: Resolver<ResolversTypes['HealthCheckResponse'], ParentType, ContextType>;
   note?: Resolver<Maybe<ResolversTypes['Note']>, ParentType, ContextType, RequireFields<QueryNoteArgs, 'id'>>;
   notes?: Resolver<Array<ResolversTypes['Note']>, ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
@@ -344,7 +373,7 @@ export type QueryResolvers<ContextType = MyContext, ParentType extends Resolvers
 }>;
 
 export type SubscriptionResolvers<ContextType = MyContext, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
-  _empty?: SubscriptionResolver<Maybe<ResolversTypes['String']>, "_empty", ParentType, ContextType>;
+  keepAlive?: SubscriptionResolver<ResolversTypes['Boolean'], "keepAlive", ParentType, ContextType>;
   noteUpdated?: SubscriptionResolver<Maybe<ResolversTypes['Note']>, "noteUpdated", ParentType, ContextType, RequireFields<SubscriptionNoteUpdatedArgs, 'id'>>;
 }>;
 
@@ -359,6 +388,7 @@ export type UserResolvers<ContextType = MyContext, ParentType extends ResolversP
 export type Resolvers<ContextType = MyContext> = ResolversObject<{
   Block?: BlockResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
+  HealthCheckResponse?: HealthCheckResponseResolvers<ContextType>;
   LoginResponse?: LoginResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Note?: NoteResolvers<ContextType>;

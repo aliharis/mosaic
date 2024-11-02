@@ -58,6 +58,13 @@ export type CreateUserInput = {
   name: Scalars['String']['input'];
 };
 
+/** Standard health check response */
+export type HealthCheckResponse = {
+  status: Scalars['String']['output'];
+  timestamp: Scalars['String']['output'];
+  version?: Maybe<Scalars['String']['output']>;
+};
+
 export type LoginInput = {
   color: Scalars['String']['input'];
   id: Scalars['ID']['input'];
@@ -70,44 +77,51 @@ export type LoginResponse = {
   user: User;
 };
 
+/** Root Mutation type - all mutations must extend from this */
 export type Mutation = {
-  _empty?: Maybe<Scalars['String']['output']>;
   addUserToNote: Note;
   createNote: Note;
   /** @deprecated Use login instead */
   createUser: User;
   deleteNote: Note;
   login: LoginResponse;
+  ping: Scalars['String']['output'];
   updateNote: Note;
 };
 
 
+/** Root Mutation type - all mutations must extend from this */
 export type MutationAddUserToNoteArgs = {
   noteId: Scalars['ID']['input'];
   userId: Scalars['ID']['input'];
 };
 
 
+/** Root Mutation type - all mutations must extend from this */
 export type MutationCreateNoteArgs = {
   note: CreateNoteInput;
 };
 
 
+/** Root Mutation type - all mutations must extend from this */
 export type MutationCreateUserArgs = {
   input: CreateUserInput;
 };
 
 
+/** Root Mutation type - all mutations must extend from this */
 export type MutationDeleteNoteArgs = {
   id: Scalars['ID']['input'];
 };
 
 
+/** Root Mutation type - all mutations must extend from this */
 export type MutationLoginArgs = {
   input: LoginInput;
 };
 
 
+/** Root Mutation type - all mutations must extend from this */
 export type MutationUpdateNoteArgs = {
   changes: UpdateNoteInput;
   id: Scalars['ID']['input'];
@@ -127,8 +141,9 @@ export type Note = {
   version: Scalars['Int']['output'];
 };
 
+/** Root Query type - all queries must extend from this */
 export type Query = {
-  _empty?: Maybe<Scalars['String']['output']>;
+  healthCheck: HealthCheckResponse;
   note?: Maybe<Note>;
   notes: Array<Note>;
   user?: Maybe<User>;
@@ -136,21 +151,25 @@ export type Query = {
 };
 
 
+/** Root Query type - all queries must extend from this */
 export type QueryNoteArgs = {
   id: Scalars['ID']['input'];
 };
 
 
+/** Root Query type - all queries must extend from this */
 export type QueryUserArgs = {
   id: Scalars['ID']['input'];
 };
 
+/** Root Subscription type - all subscriptions must extend from this */
 export type Subscription = {
-  _empty?: Maybe<Scalars['String']['output']>;
+  keepAlive: Scalars['Boolean']['output'];
   noteUpdated?: Maybe<Note>;
 };
 
 
+/** Root Subscription type - all subscriptions must extend from this */
 export type SubscriptionNoteUpdatedArgs = {
   id: Scalars['ID']['input'];
 };
