@@ -1,14 +1,9 @@
-// components/NoteModal.tsx
-import React, { useRef, useEffect, useCallback, version } from "react";
-import { X, Palette, Trash2, Clock } from "lucide-react";
-import { debounce } from "lodash";
-// import { useWebSocket } from "../hooks/useWebSocket";
-import UserList from "../UserList";
+import { Note } from "@/types";
+import { Clock, Palette, Trash2, X } from "lucide-react";
+import React, { useEffect, useRef } from "react";
 import BlockEditor from "../BlockEditor/BlockEditor";
-import { useSubscription } from "graphql-hooks";
-
-import { Note, UpdatePayload } from "@/types";
-import { useAuth } from "@/context/auth";
+import UserList from "../UserList";
+import { useNoteEditor } from "./hooks/useNoteEditor";
 
 interface NoteModalProps {
   note: Note;
@@ -26,93 +21,22 @@ const colors = [
   "bg-green-50",
 ];
 
-// GraphQL Operations
-const NOTE_UPDATED_SUBSCRIPTION = `
-  subscription NoteUpdated($id: ID!) {
-    noteUpdated(id: $id) {
-      id
-      title
-      content
-      blocks {
-        id
-        type
-        content
-      }
-      color
-      version
-      created
-      createdBy
-      lastEdited
-      lastEditedBy
-    }
-  }
-`;
-
 export default function NoteModal({
   note,
   onClose,
   onDelete,
   onUpdate,
 }: NoteModalProps) {
-  const [localNote, setLocalNote] = React.useState(note);
-  const [isSaving, setIsSaving] = React.useState(false);
-  const [showColors, setShowColors] = React.useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
-  const { user } = useAuth();
+  const [showColors, setShowColors] = React.useState(false);
 
-  // Define subscription options outside the component or use useMemo
-  const subscriptionOptions = React.useMemo(
-    () => ({
-      query: NOTE_UPDATED_SUBSCRIPTION,
-      variables: { id: note.id },
-    }),
-    [note.id]
-  );
-
-  useSubscription(subscriptionOptions, ({ data, errors }) => {
-    // TODO: handle errors
-    if (errors && errors.length > 0) {
-      console.log(errors);
-      return;
-    }
-
-    const updatedNote = data.noteUpdated;
-
-    // Prevent applying our own updates twice
-    if (updatedNote.modifiedBy !== user?.id) {
-      // If the incoming version is newer than our local version
-      if (updatedNote.version > localNote.version) {
-        setLocalNote((prevNote) => ({
-          ...prevNote,
-          ...updatedNote,
-        }));
-      }
-    }
+  const { localNote, isSaving, handleChange } = useNoteEditor({
+    note,
+    onUpdate,
   });
-  // Debounced update function
-  const debouncedUpdate = useCallback(
-    debounce((changes: Partial<Note>) => {
-      setIsSaving(true);
 
-      // Update parent state
-      onUpdate(note.id, changes, localNote.version + 1);
-      setIsSaving(false);
-    }, 3000),
-    [note.id, localNote.version, user?.id, onUpdate]
-  );
-
-  // Handle local changes
-  const handleChange = (field: keyof Note, value: string) => {
-    const changes = {
-      [field]: value,
-      version: localNote.version + 1,
-      lastEdited: new Date(),
-    };
-    setLocalNote((prev) => ({ ...prev, ...changes }));
-    debouncedUpdate(changes);
-  };
-
+  // Handle escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -175,7 +99,6 @@ export default function NoteModal({
         </div>
 
         <div className="flex items-center justify-between border-t p-4">
-          {/* Color picker and delete buttons remain the same */}
           <div className="flex gap-2">
             <div className="relative">
               <button
@@ -200,10 +123,6 @@ export default function NoteModal({
                 </div>
               )}
             </div>
-
-            {/* <button className="rounded-full p-2 hover:bg-black/5">
-              <Tag className="h-4 w-4 text-gray-600" />
-            </button> */}
           </div>
 
           <button

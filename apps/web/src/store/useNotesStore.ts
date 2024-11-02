@@ -139,7 +139,7 @@ const useNotesStore = create<NotesState>((set) => ({
           query: UPDATE_NOTE_MUTATION,
           variables: {
             id: noteId,
-            changes,
+            changes: { ...changes, version },
           },
         })
         .catch((error) => {
