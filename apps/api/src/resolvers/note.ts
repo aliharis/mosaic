@@ -69,11 +69,13 @@ export default {
       _: any,
       { note }: { note: NoteInput },
       context: MyContext
-    ): Promise<Note> => {
+    ): Promise<any> => {
       const [newNote] = await db
         .insert(notes)
         .values({
+          // @ts-ignore
           id: note.id,
+          // @ts-ignore
           title: note.title,
           content: note.content,
           blocks: note.blocks,
