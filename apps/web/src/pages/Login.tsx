@@ -29,7 +29,7 @@ export default function Login() {
     e.preventDefault();
     if (name.trim()) {
       setIsLoading(true);
-      login({ name: name.trim(), color });
+      const token = login({ name: name.trim(), color });
       setIsLoading(false);
       navigate("/dashboard");
     }

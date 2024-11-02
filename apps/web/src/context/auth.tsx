@@ -20,9 +20,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const loadUser = () => {
       const savedProfile = localStorage.getItem("userProfile");
+      const savedToken = localStorage.getItem("token");
       setTimeout(() => {
         if (savedProfile) {
           setUser(JSON.parse(savedProfile));
+        }
+
+        // Update the GraphQL client headers with the saved token
+        if (savedToken) {
+          client.setHeader("Authorization", `Bearer ${savedToken}`);
         }
         setIsLoading(false);
       }, 1000); // 1 second delay to show splash screen
@@ -55,12 +61,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(newUser);
     localStorage.setItem("userProfile", JSON.stringify(newUser));
     localStorage.setItem("token", token as string);
+
+    // Set the token in the GraphQL client headers
+    client.setHeader("Authorization", `Bearer ${token}`);
+
+    return token;
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem("userProfile");
     localStorage.removeItem("token");
+
+    // Clear the Authorization header
+    client.setHeader("Authorization", "");
   };
 
   return (
