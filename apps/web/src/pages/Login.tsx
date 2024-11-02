@@ -25,12 +25,11 @@ export default function Login() {
     }
   }, [user, navigate]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim()) {
       setIsLoading(true);
-      const token = login({ name: name.trim(), color });
-      setIsLoading(false);
+      await login({ name: name.trim(), color });
       navigate("/dashboard");
     }
   };

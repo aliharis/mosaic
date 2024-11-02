@@ -64,8 +64,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Set the token in the GraphQL client headers
     client.setHeader("Authorization", `Bearer ${token}`);
-
-    return token;
   };
 
   const logout = () => {
