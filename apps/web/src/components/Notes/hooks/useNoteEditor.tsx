@@ -54,8 +54,10 @@ export const useNoteEditor = ({
       return;
     }
 
-    const updatedNote = data?.noteUpdated;
-    if (updatedNote && updatedNote.modifiedBy !== user?.id) {
+    const updatedNote = data?.noteUpdated as Note
+
+    // Check if the incoming note was edited by another user 
+    if (updatedNote && updatedNote.lastEditedBy!== user?.id) {
       if (updatedNote.version > localNote.version) {
         // Clear pending changes if we're receiving a newer version
         pendingChangesRef.current = {};

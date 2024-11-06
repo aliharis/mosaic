@@ -56,10 +56,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    const { token } = data?.login ?? {};
+    const { token, user } = data?.login ?? {};
 
-    setUser(newUser);
-    localStorage.setItem("userProfile", JSON.stringify(newUser));
+    setUser(user as User);
+    localStorage.setItem("userProfile", JSON.stringify(user));
     localStorage.setItem("token", token as string);
 
     // Set the token in the GraphQL client headers

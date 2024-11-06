@@ -14,6 +14,8 @@ mutation Login($input: LoginInput!) {
     token
     user {
       id
+      name
+      color
     }
   }
 }

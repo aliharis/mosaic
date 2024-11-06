@@ -50,8 +50,6 @@ export function useAuth(): Plugin {
           // Parse the request body to get the operation name
           const body = await request.json();
           const operationName = body?.operationName?.toUpperCase();
-          console.log("operationName", operationName);
-          console.log(request);
 
           // If the operation is public, allow it to proceed
           if (operationName && PUBLIC_OPERATIONS.includes(operationName)) {
