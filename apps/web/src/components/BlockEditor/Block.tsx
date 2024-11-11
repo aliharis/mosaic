@@ -1,7 +1,7 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical } from "lucide-react";
+import { GripVertical, Trash2 } from "lucide-react";
 import type { Block as BlockType } from "../../types";
 
 interface BlockProps {
@@ -10,6 +10,7 @@ interface BlockProps {
   onChange: (content: string) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
   onFocus: () => void;
+  onDelete: () => void;
 }
 
 export default function Block({
@@ -18,6 +19,7 @@ export default function Block({
   onChange,
   onKeyDown,
   onFocus,
+  onDelete,
 }: BlockProps) {
   const {
     attributes,
@@ -31,6 +33,8 @@ export default function Block({
   const inputRef = useRef<HTMLDivElement>(null);
   // Add a ref to store the cursor position
   const cursorPositionRef = useRef<number>(0);
+
+  const [showMenu, setShowMenu] = useState(false);
 
   useEffect(() => {
     if (isActive && inputRef.current) {
@@ -97,6 +101,17 @@ export default function Block({
     onChange(content);
   };
 
+  const handleGripClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowMenu(!showMenu);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = () => setShowMenu(false);
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
   return (
     <div
       ref={setNodeRef}
@@ -105,12 +120,30 @@ export default function Block({
         isDragging ? "opacity-50" : ""
       }`}
     >
-      <div
-        {...attributes}
-        {...listeners}
-        className="mt-1 cursor-grab opacity-0 group-hover:opacity-100"
-      >
-        <GripVertical className="h-4 w-4 text-gray-400" />
+      <div className="relative">
+        <div
+          {...attributes}
+          {...listeners}
+          onClick={handleGripClick}
+          className="mt-1 cursor-grab opacity-0 group-hover:opacity-100"
+        >
+          <GripVertical className="h-4 w-4 text-gray-400" />
+        </div>
+        {showMenu && (
+          <div className="absolute left-6 top-0 z-10 w-32 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+                setShowMenu(false);
+              }}
+              className="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete
+            </button>
+          </div>
+        )}
       </div>
       <div
         ref={inputRef}

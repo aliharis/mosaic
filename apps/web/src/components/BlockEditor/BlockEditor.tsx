@@ -88,6 +88,10 @@ export default function BlockEditor({ blocks, onChange }: BlockEditorProps) {
     );
   };
 
+  const handleBlockDelete = (id: string) => {
+    onChange(blocks.filter((block) => block.id !== id));
+  };
+
   const handleKeyDown = useCallback(
     (id: string, e: React.KeyboardEvent) => {
       const block = blocks.find((b) => b.id === id);
@@ -177,6 +181,7 @@ export default function BlockEditor({ blocks, onChange }: BlockEditorProps) {
               onChange={(content) => handleBlockChange(block.id, content)}
               onKeyDown={(e) => handleKeyDown(block.id, e)}
               onFocus={() => setActiveBlockId(block.id)}
+              onDelete={() => handleBlockDelete(block.id)}
             />
           ))}
         </SortableContext>
