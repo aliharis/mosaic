@@ -114,10 +114,12 @@ export default function BlockEditor({ blocks, onChange }: BlockEditorProps) {
       }
 
       if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault(); // Prevent default Enter behavior
+        
         const newBlock: BlockType = {
           id: Date.now().toString(),
           type: "paragraph",
-          content: "",
+          content: "", // Empty content for new block
         };
 
         const index = blocks.findIndex((b) => b.id === id);
