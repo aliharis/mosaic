@@ -34,6 +34,7 @@ export interface Note {
 
 export interface User {
   id: string;
+  email: string;
   name: string;
   color: string;
   lastActive: Date;

@@ -1,82 +1,69 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { User } from "@/types";
-import { LOGIN_MUTATION } from "@/graphql/mutations/user";
-import { client } from "@/utils/graphql-client";
-import { LoginResponse } from "@/graphql/types/graphql";
+import { supabase } from "@/config/supabase";
+import { Session } from "@supabase/supabase-js";
 
 interface AuthContextType {
   user: User | null;
-  login: (profile: Omit<User, "id" | "lastActive">) => void;
-  logout: () => void;
+  session: Session | null;
   isLoading: boolean;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadUser = () => {
-      const savedProfile = localStorage.getItem("userProfile");
-      const savedToken = localStorage.getItem("token");
-      setTimeout(() => {
-        if (savedProfile) {
-          setUser(JSON.parse(savedProfile));
-        }
-
-        // Update the GraphQL client headers with the saved token
-        if (savedToken) {
-          client.setHeader("Authorization", `Bearer ${savedToken}`);
-        }
-        setIsLoading(false);
-      }, 1000); // 1 second delay to show splash screen
-    };
-
-    loadUser();
-  }, []);
-
-  const login = async (profile: Omit<User, "id" | "lastActive">) => {
-    const newUser: User = {
-      id: crypto.randomUUID(),
-      name: profile.name,
-      color: profile.color,
-      lastActive: new Date(),
-    };
-
-    // Save the user to the database
-    const { data, error } = await client.request<{ login: LoginResponse }>({
-      query: LOGIN_MUTATION,
-      variables: { input: newUser },
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session?.user) {
+        const userData: User = {
+          id: session.user.id,
+          email: session.user.email!,
+          name: session.user.user_metadata.name,
+          color: session.user.user_metadata.color,
+          lastActive: new Date(),
+        };
+        setUser(userData);
+      }
+      setIsLoading(false);
     });
 
-    if (error) {
-      console.error("Error logging in:", error);
-      return;
-    }
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session?.user) {
+        const userData: User = {
+          id: session.user.id,
+          email: session.user.email!,
+          name: session.user.user_metadata.name,
+          color: session.user.user_metadata.color,
+          lastActive: new Date(),
+        };
+        setUser(userData);
+      } else {
+        setUser(null);
+      }
+    });
 
-    const { token, user } = data?.login ?? {};
+    return () => subscription.unsubscribe();
+  }, []);
 
-    setUser(user as User);
-    localStorage.setItem("userProfile", JSON.stringify(user));
-    localStorage.setItem("token", token as string);
-
-    // Set the token in the GraphQL client headers
-    client.setHeader("Authorization", `Bearer ${token}`);
-  };
-
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
-    localStorage.removeItem("userProfile");
-    localStorage.removeItem("token");
-
-    // Clear the Authorization header
-    client.setHeader("Authorization", "");
+    setSession(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, session, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
