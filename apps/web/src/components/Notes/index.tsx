@@ -15,6 +15,7 @@ import NoteModal from "./Modal";
 import SortableNote from "../SortableNote";
 import useNotesStore from "@/store/useNotesStore";
 import { Block, Note } from "@/types";
+import { useUser } from '@clerk/clerk-react'
 import { useAuth } from "@/context/auth";
 
 const GET_NOTES = `
@@ -53,8 +54,11 @@ export default function Notes() {
     reorderNotes,
   } = useNotesStore();
 
-  const { data, loading, error } = useQuery(GET_NOTES);
-  const { user } = useAuth();
+  const { user } = useUser()
+  const { isLoading: authLoading } = useAuth();
+  const { data, loading, error } = useQuery(GET_NOTES, {
+    skip: authLoading
+  });
 
   useEffect(() => {
     if (data) {

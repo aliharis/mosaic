@@ -11,6 +11,11 @@ const API_ENV_PATH = path.join(__dirname, "../apps/api/.env");
 
 // Sample environment variables
 const webEnvContent = `# Web Environment Variables
+
+# Clerk Configuration
+VITE_CLERK_PUBLISHABLE_KEY=your-clerk-publishable-key
+
+# API
 VITE_GRAPHQL_API_URL=http://localhost:4000/graphql
 VITE_GRAPHQL_WS_API_URL=ws://localhost:4000/graphql`;
 
@@ -21,8 +26,9 @@ NODE_ENV=development
 # Database
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/your_db_name
 
-# Authentication
-JWT_SECRET=your-jwt-secret-change-me`;
+# Clerk Configuration
+CLERK_JWT_KEY=your-clerk-jwks-public-key
+`;
 
 function ensureDirectoryExists(filePath) {
   const dirname = path.dirname(filePath);

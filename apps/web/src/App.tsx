@@ -1,25 +1,31 @@
-import { ClientContext, GraphQLClient } from "graphql-hooks";
+import { useAuth } from "@clerk/clerk-react";
+import { ClientContext } from "graphql-hooks";
 import {
+  Navigate,
+  Route,
   BrowserRouter as Router,
   Routes,
-  Route,
-  Navigate,
 } from "react-router-dom";
-import { AuthProvider, useAuth } from "./context/auth";
+import { AuthProvider } from "./context/auth";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
-import { Splash } from "./components/common/Splash";
 import { client } from "./utils/graphql-client";
 
-function PrivateRoute({ children }: { children: React.ReactNode }) {
-  const { user, isLoading } = useAuth();
+const ProtectedRoute = ({ element }: { element: JSX.Element }) => {
+  const { isLoaded, isSignedIn } = useAuth();
 
-  if (isLoading) {
-    return <Splash />;
+  // Wait until Clerk is fully loaded
+  if (!isLoaded) {
+    return <div>Loading...</div>; // You can replace this with a better loading UI
   }
 
-  return user ? <>{children}</> : <Navigate to="/login" />;
-}
+  // Redirect unauthorized users
+  if (!isSignedIn) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return element;
+};
 
 function App() {
   return (
@@ -28,15 +34,8 @@ function App() {
         <Router>
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route
-              path="/dashboard"
-              element={
-                <PrivateRoute>
-                  <Dashboard />
-                </PrivateRoute>
-              }
-            />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
           </Routes>
         </Router>
       </AuthProvider>

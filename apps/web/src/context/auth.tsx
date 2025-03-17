@@ -1,85 +1,37 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { User } from "@/types";
-import { LOGIN_MUTATION } from "@/graphql/mutations/user";
 import { client } from "@/utils/graphql-client";
-import { LoginResponse } from "@/graphql/types/graphql";
+import { useAuth as useClerkAuth } from "@clerk/clerk-react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface AuthContextType {
-  user: User | null;
-  login: (profile: Omit<User, "id" | "lastActive">) => void;
-  logout: () => void;
   isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const { isSignedIn, getToken, isLoaded } = useClerkAuth();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadUser = () => {
-      const savedProfile = localStorage.getItem("userProfile");
-      const savedToken = localStorage.getItem("token");
-      setTimeout(() => {
-        if (savedProfile) {
-          setUser(JSON.parse(savedProfile));
-        }
+    const fetchAuthToken = async () => {
+      if (!isLoaded) return; // Wait for Clerk to load
 
-        // Update the GraphQL client headers with the saved token
-        if (savedToken) {
-          client.setHeader("Authorization", `Bearer ${savedToken}`);
+      if (isSignedIn) {
+        const token = await getToken();
+        if (token) {
+          client.setHeader("Authorization", `Bearer ${token}`);
         }
-        setIsLoading(false);
-      }, 1000); // 1 second delay to show splash screen
+      } else {
+        client.setHeader("Authorization", "");
+      }
+
+      setIsLoading(false);
     };
 
-    loadUser();
-  }, []);
+    fetchAuthToken();
+  }, [isSignedIn, getToken, isLoaded]);
 
-  const login = async (profile: Omit<User, "id" | "lastActive">) => {
-    const newUser: User = {
-      id: crypto.randomUUID(),
-      name: profile.name,
-      color: profile.color,
-      lastActive: new Date(),
-    };
-
-    // Save the user to the database
-    const { data, error } = await client.request<{ login: LoginResponse }>({
-      query: LOGIN_MUTATION,
-      variables: { input: newUser },
-    });
-
-    if (error) {
-      console.error("Error logging in:", error);
-      return;
-    }
-
-    const { token, user } = data?.login ?? {};
-
-    setUser(user as User);
-    localStorage.setItem("userProfile", JSON.stringify(user));
-    localStorage.setItem("token", token as string);
-
-    // Set the token in the GraphQL client headers
-    client.setHeader("Authorization", `Bearer ${token}`);
-  };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("userProfile");
-    localStorage.removeItem("token");
-
-    // Clear the Authorization header
-    client.setHeader("Authorization", "");
-  };
-
-  return (
-    <AuthContext.Provider value={{ user, login, logout, isLoading }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ isLoading }}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

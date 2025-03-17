@@ -1,0 +1,3 @@
+{
+    "postCreateCommand": "gh codespace ports visibility 4000:public"
+}
