@@ -29,13 +29,6 @@ export const blockTypeEnum = pgEnum("block_type", [
   "code",
 ]);
 
-export const users = pgTable("users", {
-  id: uuid("id").primaryKey().default(generateUuid),
-  name: text("name").notNull(),
-  color: text("color").notNull(),
-  lastActive: timestamp("last_active").notNull().defaultNow(),
-});
-
 export const notes = pgTable("notes", {
   id: uuid("id").primaryKey().default(generateUuid),
   title: text("title").notNull(),
@@ -44,41 +37,27 @@ export const notes = pgTable("notes", {
   color: text("color").notNull(),
   version: integer("version").notNull().default(1),
   created: timestamp("created").notNull().defaultNow(),
-  createdBy: uuid("created_by")
-    .references(() => users.id)
-    .notNull(),
+  createdBy: text("created_by").notNull(), // Remove foreign key constraint
   lastEdited: timestamp("last_edited").notNull().defaultNow(),
-  lastEditedBy: uuid("last_edited_by")
-    .references(() => users.id)
-    .notNull(),
+  lastEditedBy: text("last_edited_by").notNull(), // Remove foreign key constraint
 });
 
-export const noteToUsers = pgTable("note_to_users", {
+export const noteUser = pgTable("note_user", {
   noteId: uuid("note_id")
     .references(() => notes.id)
     .notNull(),
-  userId: uuid("user_id")
-    .references(() => users.id)
-    .notNull(),
+  userId: text("user_id").notNull(), // Remove foreign key constraint if it exists
 });
 
 // Define relations
 export const notesRelations = relations(notes, ({ many }) => ({
-  activeUsers: many(noteToUsers),
+  activeUsers: many(noteUser),
 }));
 
-export const usersRelations = relations(users, ({ many }) => ({
-  notes: many(noteToUsers),
-}));
-
-export const noteToUsersRelations = relations(noteToUsers, ({ one }) => ({
+export const noteToUsersRelations = relations(noteUser, ({ one }) => ({
   note: one(notes, {
-    fields: [noteToUsers.noteId],
+    fields: [noteUser.noteId],
     references: [notes.id],
-  }),
-  user: one(users, {
-    fields: [noteToUsers.userId],
-    references: [users.id],
   }),
 }));
 
@@ -99,9 +78,7 @@ export interface Block {
 
 export const schemaWithRelations = {
   notes,
-  users,
-  noteToUsers,
+  noteUser,
   notesRelations,
-  usersRelations,
   noteToUsersRelations,
 };

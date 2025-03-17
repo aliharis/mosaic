@@ -1,11 +1,11 @@
 {
-  "id": "84b56b7c-a111-474a-95a8-c40a23e4214f",
+  "id": "9d05961b-ea6b-4a5d-89fd-198a6e2a104a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.note_to_users": {
-      "name": "note_to_users",
+    "public.note_user": {
+      "name": "note_user",
       "schema": "",
       "columns": {
         "note_id": {
@@ -16,32 +16,19 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "note_to_users_note_id_notes_id_fk": {
-          "name": "note_to_users_note_id_notes_id_fk",
-          "tableFrom": "note_to_users",
+        "note_user_note_id_notes_id_fk": {
+          "name": "note_user_note_id_notes_id_fk",
+          "tableFrom": "note_user",
           "tableTo": "notes",
           "columnsFrom": [
             "note_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "note_to_users_user_id_users_id_fk": {
-          "name": "note_to_users_user_id_users_id_fk",
-          "tableFrom": "note_to_users",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
           ],
           "columnsTo": [
             "id"
@@ -106,7 +93,7 @@
         },
         "created_by": {
           "name": "created_by",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -119,73 +106,9 @@
         },
         "last_edited_by": {
           "name": "last_edited_by",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "notes_created_by_users_id_fk": {
-          "name": "notes_created_by_users_id_fk",
-          "tableFrom": "notes",
-          "tableTo": "users",
-          "columnsFrom": [
-            "created_by"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "notes_last_edited_by_users_id_fk": {
-          "name": "notes_last_edited_by_users_id_fk",
-          "tableFrom": "notes",
-          "tableTo": "users",
-          "columnsFrom": [
-            "last_edited_by"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "public.users": {
-      "name": "users",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "uuid_generate_v4()"
-        },
-        "name": {
-          "name": "name",
           "type": "text",
           "primaryKey": false,
           "notNull": true
-        },
-        "color": {
-          "name": "color",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "last_active": {
-          "name": "last_active",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
         }
       },
       "indexes": {},
