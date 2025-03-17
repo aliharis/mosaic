@@ -1,7 +1,6 @@
 import { YogaInitialContext, GraphQLParams } from "graphql-yoga";
 import { parse, OperationDefinitionNode, Kind, GraphQLError } from "graphql";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { JWT_SECRET } from "./config/auth";
+import { verifyToken } from '@clerk/backend'
 
 // Define the public fields (case-sensitive)
 const PUBLIC_FIELDS = new Set(["login"]);
@@ -16,11 +15,15 @@ export interface MyContext extends YogaInitialContext {
 
 async function validateToken(token: string): Promise<AuthenticatedUser | null> {
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    const verifiedToken = await verifyToken(token, {
+      jwtKey: process.env.CLERK_JWT_KEY,
+    })
+
     return {
-      id: payload.userId as string,
+      id: verifiedToken.sub,
     };
   } catch (error) {
+    console.log("Error validating token:", error);
     return null;
   }
 }
